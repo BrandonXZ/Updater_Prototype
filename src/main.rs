@@ -14,7 +14,8 @@ mod connection;
 mod pathprep;
 mod dbStructs;
 mod settings;
-
+mod menu;
+mod dbInterface;
 
 
 fn main() {

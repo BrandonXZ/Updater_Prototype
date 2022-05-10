@@ -34,7 +34,8 @@ pub struct DbUrl {
 
     use std::fmt::Debug;
 
-pub fn run() -> (String, String) {
+    //String, String is the return type for the function below. It was removed due to error during testing. and the return value removed below...
+pub fn run() -> () {
     let mut dbt = String::new();
     println!("Enter the Database type (eg. mysql): ");
     let dbtn = std::io::stdin().read_line(&mut dbt);
@@ -62,5 +63,7 @@ pub fn run() -> (String, String) {
     let mut dbu = DbUrl::new(dbt.as_str(), &usr.as_str(), &psw, &hst, &prt, &dbn);
     let dburl: String = format!("{}://{}:{}@{}:{}/{}",dbt.trim(), usr.trim(), psw.trim(), hst.trim(), prt.trim(), dbn.trim());
     
-    (dburl, dbn)
+    //printing for now...
+    println!("{} {}", &dburl, &dbn);
+    //(dburl, dbn)
     } //end run
