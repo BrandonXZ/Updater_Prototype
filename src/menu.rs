@@ -24,6 +24,7 @@ pub fn run(){
         match &selection.trim() {
             &"automated-run" => dbInterface::run(),
             &"setup"=> pathprep::run(),
+            _=> panic!("Menu Option not set up yet!!")
         }
         
         } else if input.trim().eq("quit") {
