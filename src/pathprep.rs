@@ -1,4 +1,6 @@
-//This section gets user input and preps the path to the database and ensures that user is not putting invalid options.
+/*This section gets user input and preps the path to the database and ensures that user is not putting invalid options.
+* Testing with | Type: mysql ... Username:admin ... Password: admin ... Host: localhost ... port: 3306 ... Database Name: testdb */
+
 
 #![allow(unused_variables)]
 #![allow(unused_mut)]

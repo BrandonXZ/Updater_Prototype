@@ -7,7 +7,7 @@
 use mysql::*;
 use mysql::prelude::*;
 
-use crate::dbInterface;
+use crate::{dbInterface, settings};
 
 // use byteorder::{LittleEndian as LE, ReadBytesExt, WriteBytesExt};
 // use bytes::BufMut;
@@ -55,8 +55,9 @@ pub fn subscriber_selection (tables:Vec<String>) {
     if tables_avail.contains(&sel_tables_as_str) {
         println!("The table exists in the database");
         dbInterface::add();
+        settings::run();
         
     } else {
-        println!("That table does not exist in the database...");
+        println!("That table does not exist in the database...please try again");
     }
 }
