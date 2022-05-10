@@ -13,7 +13,7 @@ pub fn run(){
     let mut input = "blank".to_string();
     
     while input.trim().ne("quit") {
-        println!("Enter a command: ");
+        println!("Enter a command: "); // will be removed when running auto
         input = String::new();
         let _choice = io::stdin().read_line(&mut input);
         let selection = input.to_ascii_lowercase();
@@ -24,7 +24,7 @@ pub fn run(){
         match &selection.trim() {
             &"automated-run" => dbInterface::run(),
             &"setup"=> pathprep::run(),
-            _=> panic!("Menu Option not set up yet!!")
+            _=> panic!("Menu Option not set up yet!!") // better eror handling to come, this is just a prototype
         }
         
         } else if input.trim().eq("quit") {
