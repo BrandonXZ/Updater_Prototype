@@ -2,6 +2,13 @@
 
 #![allow(unused_variables)]
 #![allow(unused_mut)]
+#![allow(dead_code)]
+#![allow(unused_must_use)] //This is dangerous and will be removed later, this is because of an unhandled result type that could be an error returned from the 
+                          //connection::run function but since this is only a prototype, I'm allowing dead code...
+use std::fmt::Debug;
+use crate::connection;
+
+
 #[derive(Debug)]
 pub struct DbUrl {
     pub db_base: String,
@@ -32,7 +39,7 @@ pub struct DbUrl {
         }
     } //end impl db_url
 
-    use std::fmt::Debug;
+    
 
     //String, String is the return type for the function below. It was removed due to error during testing. and the return value removed below...
 pub fn run() -> () {
@@ -61,9 +68,11 @@ pub fn run() -> () {
     let dbN = std::io::stdin().read_line(&mut dbn);
     
     let mut dbu = DbUrl::new(dbt.as_str(), &usr.as_str(), &psw, &hst, &prt, &dbn);
+    //may use regex to correct this later ---->
     let dburl: String = format!("{}://{}:{}@{}:{}/{}",dbt.trim(), usr.trim(), psw.trim(), hst.trim(), prt.trim(), dbn.trim());
     
     //printing for now...
     println!("{} {}", &dburl, &dbn);
+    connection::run(dburl, &dbn);
     //(dburl, dbn)
     } //end run

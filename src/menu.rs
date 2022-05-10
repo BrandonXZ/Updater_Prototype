@@ -3,7 +3,7 @@
 */ 
 
 use std::io;
-use std::collections::{HashSet, HashMap};
+
 
 use crate::{dbInterface, pathprep};
 
@@ -15,7 +15,7 @@ pub fn run(){
     while input.trim().ne("quit") {
         println!("Enter a command: ");
         input = String::new();
-        let choice = io::stdin().read_line(&mut input);
+        let _choice = io::stdin().read_line(&mut input);
         let selection = input.to_ascii_lowercase();
 
         if options.contains(&selection.trim()) {

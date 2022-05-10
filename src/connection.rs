@@ -7,6 +7,8 @@
 use mysql::*;
 use mysql::prelude::*;
 
+use crate::dbInterface;
+
 // use byteorder::{LittleEndian as LE, ReadBytesExt, WriteBytesExt};
 // use bytes::BufMut;
 
@@ -18,11 +20,6 @@ pub fn run(path: String, dbn: &str) -> Result<()> {
     let pool = Pool::new(opts).unwrap();
     let mut conn = pool.get_conn().unwrap();
     println!("{} - attempting connection", db_url);
-
-    // Get service name 
-    let mut subscribe= String::new();
-    println!("Enter Service identifier: ");
-    let service = std::io::stdin().read_line(&mut subscribe);
 
     //get tables available within the database
     let table_stmt = format!("SHOW TABLES IN {}", dbn);
@@ -57,6 +54,7 @@ pub fn subscriber_selection (tables:Vec<String>) {
 
     if tables_avail.contains(&sel_tables_as_str) {
         println!("The table exists in the database");
+        dbInterface::add();
         
     } else {
         println!("That table does not exist in the database...");
