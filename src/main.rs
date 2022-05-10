@@ -20,5 +20,4 @@ mod dbInterface;
 
 fn main() {
     menu::run();
-    
 }
