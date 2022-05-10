@@ -1,0 +1,14 @@
+[package]
+name = "Updater_Prototype"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+reqwest = { version = "0.11.9", features = ["json"], optional = true }
+url = "2.2.2"
+mysql = "22.1.0"
+mysql_common = "0.28.2"
+dotenv = "0.15.0"
+chrono = "0.4.19"
