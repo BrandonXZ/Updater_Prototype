@@ -27,7 +27,7 @@ pub fn run(path: String, dbn: &str) -> Result<()> {
     let mut selection = conn.start_transaction(TxOpts::default())?; // may not need this
     
     let tables_avail = get_avail_tables(selection, table_stmt);
-    subscriber_selection(tables_avail); 
+    subscriber_selection(db_url, tables_avail); 
     Ok(())
 }
 
@@ -44,7 +44,7 @@ fn get_avail_tables(mut selection: Transaction, table_stmt: String) -> Vec<Strin
 
 /*check if desired table selection exists and get other selections if more than one */ 
 
-pub fn subscriber_selection (tables:Vec<String>) {
+pub fn subscriber_selection (db_url: String, tables:Vec<String>) {
     let tables_avail = tables;
     println!("Enter Car Id Table name");
     let mut selected_table = String::new();
@@ -55,7 +55,7 @@ pub fn subscriber_selection (tables:Vec<String>) {
     if tables_avail.contains(&sel_tables_as_str) {
         println!("The table exists in the database");
         dbInterface::add();
-        settings::run();
+        settings::run(db_url);
         
     } else {
         println!("That table does not exist in the database...please try again");
