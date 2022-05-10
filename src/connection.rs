@@ -46,7 +46,7 @@ fn get_avail_tables(mut selection: Transaction, table_stmt: String) -> Vec<Strin
 
 pub fn subscriber_selection (tables:Vec<String>) {
     let tables_avail = tables;
-    println!("Enter Table to subscribe to: ");
+    println!("Enter Car Id Table name");
     let mut selected_table = String::new();
     let response = std::io::stdin().read_line(&mut selected_table);
     let sel_tables_as_str = str::replace(&selected_table, "\r\n", "");
