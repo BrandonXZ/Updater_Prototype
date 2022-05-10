@@ -19,5 +19,6 @@ mod dbInterface;
 
 
 fn main() {
-    println!("Hello, world!");
+    menu::run();
+    
 }
