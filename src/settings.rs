@@ -35,9 +35,9 @@ pub fn run(db_url:String) {
         let mut perm = metadata.permissions();
         let printable_Perm = perm.clone();
         perm.set_readonly(false);
-        fs::set_permissions(logfile, perm);
+        let printable = fs::set_permissions(logfile, perm);
         println!("This is 1st else metadata: --->{:?}", metadata);
-        println!("This is 1st else permission: ---->{:?}", printable_Perm);
+        println!("This is 1st else permission: ---->{:?}", printable);
     }
 
 
@@ -66,9 +66,9 @@ pub fn run(db_url:String) {
         let mut perm = metadata.permissions();
         let printable_Perm = perm.clone();
         perm.set_readonly(false);
-        fs::set_permissions(db_ref_file, perm);
+        let printable = fs::set_permissions(db_ref_file, perm);
         println!("This is 2nd else metadata: --->{:?}", metadata);
-        println!("This is 2nd else permission: ---->{:?}", printable_Perm);
+        println!("This is 2nd else permission: ---->{:?}", printable);
     }
 
     let mut saving = File::open(db_ref_file).expect("Could not open the db ref file...");
