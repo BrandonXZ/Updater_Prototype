@@ -29,9 +29,9 @@ pub fn run(db_url:String) {
         log.write(current_db);
 
     } else {
-        let _current_time = chrono::Local::now();
+        let current_time = chrono::Local::now();
         println!("creating new log file...\n");
-        let creation_message = stringify!(logfile, " was created on {:?}", current_time);
+        let creation_message = format!(" {} was created on {:?}", logfile, current_time);
 
         let mut log = File::create("umler_updater-log.txt").expect("Issue creating log files..");
         let metadata = log.metadata().unwrap();
@@ -58,8 +58,9 @@ pub fn run(db_url:String) {
         log.write(dupl_message.as_bytes()).expect("could not write duplication notice");
         log.write(current_db);
     } else {
+        let current_time = chrono::Local::now();
         println!("creating new ref file now...\n");
-        let creation_message = stringify!(db_ref_file, " was created on {:?} \n", current_time);
+        let creation_message = format!("{} was created on {:?} \n", logfile, current_time);
         let mut db_reference = File::create(db_ref_file).expect("Issue creating db ref files...");
         let metadata = db_reference.metadata().unwrap();
         let mut perm = metadata.permissions();
