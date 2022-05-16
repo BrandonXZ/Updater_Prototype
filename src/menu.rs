@@ -13,7 +13,7 @@ pub fn run(){
     let mut input = "blank".to_string();
     
     while input.trim().ne("quit") {
-        println!("Enter a command(setup or automated-run): "); // will be removed when running auto
+        println!("Enter a command(setup, automated-run, or quit): "); // will be removed when running auto
         input = String::new();
         let _choice = io::stdin().read_line(&mut input);
         let selection = input.to_ascii_lowercase();
