@@ -16,27 +16,28 @@ pub fn run(db_url:String) {
 
     if Path::new(logfile).exists() {
         println!("{} exists already!!\n", logfile);
-        let log = File::open(logfile).expect("Could not open the existing log file ~");
+        let current_time = chrono::Local::now();
+        let dupl_message = format!("recreate of log file attempted @ {}\n", current_time); 
+        let mut log = File::open(logfile).expect("Could not open the existing log file ~");
 
         //checks permissions for the file, and sets it to writable 
         let metadata = log.metadata().unwrap();
         let mut perm = metadata.permissions();
         perm.set_readonly(false);
         fs::set_permissions(logfile, perm);
+        log.write(dupl_message.as_bytes());
+        log.write(current_db);
 
     } else {
+        let _current_time = chrono::Local::now();
         println!("creating new log file...\n");
+        let creation_message = stringify!(logfile, " was created on {:?}", current_time);
+
         let mut log = File::create("umler_updater-log.txt").expect("Issue creating log files..");
         let metadata = log.metadata().unwrap();
         let mut perm = metadata.permissions();
         perm.set_readonly(false);
-<<<<<<< HEAD
-        let printable = fs::set_permissions(logfile, perm);
-        println!("This is 1st else metadata: --->{:?}", metadata);
-        println!("This is 1st else permission: ---->{:?}", printable);
-=======
-        log.write(b"This stupid fucking thing!!!!!");
->>>>>>> 74cfaed747c2f385f2e3cb92d0550c7eb28ead58
+        log.write(creation_message.as_bytes());
     }
 
 
@@ -55,19 +56,16 @@ pub fn run(db_url:String) {
         perm.set_readonly(false);
         fs::set_permissions(logfile, perm);
         log.write(dupl_message.as_bytes()).expect("could not write duplication notice");
+        log.write(current_db);
     } else {
         println!("creating new ref file now...\n");
+        let creation_message = stringify!(db_ref_file, " was created on {:?} \n", current_time);
         let mut db_reference = File::create(db_ref_file).expect("Issue creating db ref files...");
         let metadata = db_reference.metadata().unwrap();
         let mut perm = metadata.permissions();
         perm.set_readonly(false);
-<<<<<<< HEAD
-        let printable = fs::set_permissions(db_ref_file, perm);
-        println!("This is 2nd else metadata: --->{:?}", metadata);
-        println!("This is 2nd else permission: ---->{:?}", printable);
-=======
-        db_reference.write(b"This stupid fucking thing!!!!!");
->>>>>>> 74cfaed747c2f385f2e3cb92d0550c7eb28ead58
+        db_reference.write(creation_message.as_bytes());
+        db_reference.write(current_db);
     }
 
     println!("successfully setup the Umler updater program....\n");
