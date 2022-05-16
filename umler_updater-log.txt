@@ -1,1 +1,11 @@
- umler_updater-log.txt was created on 2022-05-16T14:09:06.305477100-04:00
+umler_updater-log.txt was created on 2022-05-16T15:49:43.467322500-04:00
+recreate of log file attempted @ 2022-05-16 15:50:20.939455400 -04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+recreate of ref file attempted @ 2022-05-16 15:50:20.943355500 -04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+recreate of log file attempted @ 2022-05-16 15:52:29.802277400 -04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+recreate of log file attempted @ 2022-05-16 15:53:13.881776 -04:00
+mysql://admin:admin@localhost:3306/testdb
+recreate of ref file attempted @ 2022-05-16 15:53:13.884988900 -04:00
+mysql://admin:admin@localhost:3306/testdb

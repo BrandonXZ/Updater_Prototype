@@ -3,7 +3,7 @@
 * from there it will walk the user through what it needs to function properly. */
 #![allow(unreachable_code)]
 #![allow(unused_must_use)]
-use std::{path::Path, fs::{File, self}, io::Write};
+use std::{path::Path, fs::{File, OpenOptions}, io::{Write, Read, Seek, SeekFrom}};
 
 
 
@@ -11,27 +11,33 @@ pub fn run(db_url:String) {
     let current_db = db_url.as_bytes();
     let db_ref_file = "db_ref.txt";
     let logfile = "umler_updater-log.txt";
-
+    let mut offset:usize;
+    let mut holder = String::new();
 //check if logfile exists and try to create logfile if not
 
     if Path::new(logfile).exists() {
         println!("{} exists already!!\n", logfile);
         let current_time = chrono::Local::now();
-        let dupl_message = format!("recreate of log file attempted @ {}\n", current_time); 
-        let mut log = File::open(logfile).expect("Could not open the existing log file ~");
+        let dupl_message = format!("\nrecreate of log file attempted @ {}\n", current_time); 
 
-        //checks permissions for the file, and sets it to writable 
+        //Open File
+        let mut log = OpenOptions::new().read(true).write(true).open(logfile).unwrap();
+        offset = log.read_to_string(&mut holder).unwrap();
+
+        //Checks permissions for the file, and sets it to writable 
         let metadata = log.metadata().unwrap();
         let mut perm = metadata.permissions();
         perm.set_readonly(false);
-        fs::set_permissions(logfile, perm);
+
+        //Moves cursor to end of file to log this event
+        log.seek(SeekFrom::Start(offset.try_into().unwrap()));
         log.write(dupl_message.as_bytes());
         log.write(current_db);
-
+        println!("finished duplicate log stuff...");
     } else {
         let current_time = chrono::Local::now();
         println!("creating new log file...\n");
-        let creation_message = format!(" {} was created on {:?}", logfile, current_time);
+        let creation_message = format!("{} was created on {:?}", logfile, current_time);
 
         let mut log = File::create("umler_updater-log.txt").expect("Issue creating log files..");
         let metadata = log.metadata().unwrap();
@@ -45,18 +51,24 @@ pub fn run(db_url:String) {
 
     if Path::new(db_ref_file).exists() {
         let current_time = chrono::Local::now();
-        let dupl_message = format!("recreate of ref file attempted @ {}\n", current_time); 
+        let dupl_message = format!("\nrecreate of ref file attempted @ {}\n", current_time); 
         println!("{} exists already!!\n", db_ref_file);
         println!("{:?}", dupl_message);
 
+        //Open File
+        let mut log = OpenOptions::new().read(true).write(true).open(logfile).unwrap();
+        offset = log.read_to_string(&mut holder).unwrap();
+
         //checks permissions for the file, and sets it to writable
-        let mut log = File::open(logfile).expect("could not open the db ref file");
         let metadata = log.metadata().unwrap();
         let mut perm = metadata.permissions();
         perm.set_readonly(false);
-        fs::set_permissions(logfile, perm);
-        log.write(dupl_message.as_bytes()).expect("could not write duplication notice");
+
+        //Moves cursor to end of file to log this event
+        log.seek(SeekFrom::Start(offset.try_into().unwrap()));
+        log.write(dupl_message.as_bytes());
         log.write(current_db);
+        println!("finished duplicate ref file stuff...");
     } else {
         let current_time = chrono::Local::now();
         println!("creating new ref file now...\n");

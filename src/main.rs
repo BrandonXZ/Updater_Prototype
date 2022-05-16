@@ -18,8 +18,20 @@ mod dbStructs;
 mod settings;
 mod menu;
 mod dbInterface;
+mod splash;
 
+//use std::{env, ptr::null}; //use with cli arg passing
 
 fn main() {
-    menu::run();
+        //need to add if statement for working with cli args for task scheduler to  work, well documented in rust cannon
+    splash::showWelcome();
+    menu::run(); 
+        //automated_run();
+    
 }
+
+//use with cli arg passing
+
+// fn automated_run() {
+//     dbInterface::run();
+// }

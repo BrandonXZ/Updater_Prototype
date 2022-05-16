@@ -1,2 +1,2 @@
-db_ref.txt was created on 2022-05-16T14:09:06.311608900-04:00 
-mysql://admin:admin@localhost:3306/testdb
+db_ref.txt was created on 2022-05-16T15:52:29.805536700-04:00 
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3

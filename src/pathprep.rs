@@ -9,7 +9,7 @@
                           //connection::run function but since this is only a prototype, I'm allowing dead code...
 use std::fmt::Debug;
 use crate::connection;
-
+use crate::splash;
 
 #[derive(Debug)]
 pub struct DbUrl {
@@ -45,6 +45,7 @@ pub struct DbUrl {
 
     //String, String is the return type for the function below. It was removed due to error during testing. and the return value removed below...
 pub fn run() -> () {
+    splash::run();
     let mut dbt = String::new();
     println!("Enter the Database type (eg. mysql): ");
     let dbtn = std::io::stdin().read_line(&mut dbt);
