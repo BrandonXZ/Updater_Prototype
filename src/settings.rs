@@ -60,7 +60,7 @@ pub fn run(db_url:String) {
     } else {
         let current_time = chrono::Local::now();
         println!("creating new ref file now...\n");
-        let creation_message = format!("{} was created on {:?} \n", logfile, current_time);
+        let creation_message = format!("{} was created on {:?} \n", db_ref_file, current_time);
         let mut db_reference = File::create(db_ref_file).expect("Issue creating db ref files...");
         let metadata = db_reference.metadata().unwrap();
         let mut perm = metadata.permissions();
