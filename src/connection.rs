@@ -54,8 +54,9 @@ pub fn subscriber_selection (db_url: String, tables:Vec<String>) {
 
     if tables_avail.contains(&sel_tables_as_str) {
         println!("The table exists in the database");
-        dbInterface::add();
         settings::run(db_url);
+        dbInterface::add();
+        
     } else {
         println!("That table does not exist in the database...please try again");
     }

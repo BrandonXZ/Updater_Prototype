@@ -9,3 +9,4 @@ recreate of log file attempted @ 2022-05-16 15:53:13.881776 -04:00
 mysql://admin:admin@localhost:3306/testdb
 recreate of ref file attempted @ 2022-05-16 15:53:13.884988900 -04:00
 mysql://admin:admin@localhost:3306/testdb
+Error - This occurred due to internal code exception: "testing Error logging from main...", this occured @: 2022-05-17T11:17:30.123120200-04:00
