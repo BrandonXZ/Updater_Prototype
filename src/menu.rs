@@ -1,19 +1,20 @@
 /* This module really only defines a menu for a single usable option for ease of development. 
 * Running the program once will allow for the user to set up, after that task scheule will call this program and pass an argument for automation
 */ 
-
 use std::io;
-
-
 use crate::{dbInterface, pathprep};
 
+
+
 pub fn run(){
+
     let options = vec!["automated-run", "setup"]; 
     println!("\nUmler Car info updater \n");
     let mut input = "blank".to_string();
     
+
     while input.trim().ne("quit") {
-        println!("Enter a command(setup, automated-run, or quit): "); // will be removed when running auto
+        println!("Enter a command(setup, automated-run, or quit): "); 
         input = String::new();
         let _choice = io::stdin().read_line(&mut input);
         let selection = input.to_ascii_lowercase();
@@ -24,7 +25,7 @@ pub fn run(){
         match &selection.trim() {
             &"automated-run" => dbInterface::run(),
             &"setup"=> pathprep::run(),
-            _=> panic!("Menu Option not set up yet!!") // better eror handling to come, this is just a prototype
+            _=> panic!("Menu Option not set up yet!!") 
         }
         
         } else if input.trim().eq("quit") {
@@ -34,4 +35,5 @@ pub fn run(){
             println!("Not a valid entry...Try \"setup\", or \"quit\"");
         }
     }
+    
 }

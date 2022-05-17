@@ -111,7 +111,6 @@ pub fn logthis_dbRelated(Errornote:String, dburl:String) {
     println!("{}", message);
     log.write(message.as_bytes());
     log.write(current_db);
-    todo!() //ATTENTON!! remove this and print statement if tested and working
 }
 
 pub fn logthis_webService(Errornote:String, webservice_type:String) {
@@ -130,6 +129,5 @@ pub fn logthis_webService(Errornote:String, webservice_type:String) {
     
     //this should be either the request or response, message(Errornote) will tell the actual error/exception that occured...
     log.write(webservice_type.as_bytes());  
-    todo!() // ATTENTION!!
 
 }

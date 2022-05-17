@@ -2,7 +2,8 @@
 * to the correct car table*/
 #![allow(unused_variables)]
 #![allow(unused_must_use)]
-use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read}};
+#![allow(unused_mut)]
+use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRead}};
 
 use crate::settings;
 const DB_REF_FILE: &str = "db_ref.txt";
@@ -12,7 +13,8 @@ pub fn run() {
 
     let blank_ID = "".to_string();
     println!("run functionality not added yet....");
-    webservice_formatter(blank_ID)
+    webservice_formatter(blank_ID);
+    add()
 
 }
 
@@ -23,22 +25,22 @@ pub fn add() {
     let current_ID: String = "".to_string();
     println!("add functionality currently being coded...");
     //arg type almost guaranteed to change and be a vector or array of webservice response type or json to be decoded, formatted then added to the db.
-    
+    //current process is menu>pathprep>connection>this add function, this will need to change after testing...
+
     //This reads the db reference file to get the db connection info being used.
     let mut db_reference = OpenOptions::new().read(true).write(true).open(DB_REF_FILE).unwrap();
     let test_message = "can't add to db because ID was blank".to_string();
-    let offset:usize;
+    //let content_length = db_reference.bytes();
+
     let mut holder = String::new();
-    offset = db_reference.read_to_string(&mut holder).unwrap();
-    
-    db_reference.seek(SeekFrom::Start(61));
-    let db_string = fs::read_to_string(DB_REF_FILE).unwrap();
+    let mut reader = BufReader::new(db_reference);
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    println!("Current length in bytes is: {:?}, the value in db-string is: {:?}", db_string.unwrap(), holder);
+    settings::logthis_dbRelated(test_message, holder)
 
-    println!("Current offset is: {:?}, the value at this position is: {:?}", offset, db_string);
-    settings::logthis_dbRelated(test_message, db_string)
-    //db_reference.seek(SeekFrom::Start(offset.try_into().unwrap()));
-
-    //settings::logthis_dbRelated(test_message,)
+    //db_reference.seek(SeekFrom::Start(offset.try_into().unwrap())); //may need later to move cursor but probably not with above read line method
 }
 
 
