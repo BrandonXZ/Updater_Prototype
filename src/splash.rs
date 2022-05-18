@@ -9,8 +9,10 @@ pub fn run() {
 }
 
 pub fn showWelcome() {
-    let message = "This is the Duos Car AEI information updater.\nThis Program checks our local database table for AEI tags 
-    \nthat are not recognized during train passage at a RIP.\nIt then communicates with Umler webservices to obtain that information and update our local database tables.
+    let message = "This is the Duos Car AEI information updater.
+    \nThis Program checks our local database table for AEI tags 
+    \nthat are not recognized during train passage at a RIP.
+    \nIt then communicates with Umler webservices to obtain that information and update our local database tables.
     \nBy typing \"setup\", the user can insert information for the table that holds records of unrecognized train cars and the table for storing the updated information.
     \nThis program is intended to run automatically after setup is complete but can also be run manually by typing \"automated-run\" at the menu.
     \nThis program will need to be configured in windows task scheduler during installation using the attached batch file.";

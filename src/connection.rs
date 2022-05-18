@@ -2,7 +2,7 @@
 
 #![allow(unused_mut)]
 #![allow(unused_variables)]
-
+#![allow(unused_assignments)]
 
 use mysql::*;
 use mysql::prelude::*;
@@ -19,7 +19,7 @@ pub fn run(path: String, dbn: &str) -> Result<()> {
     let opts = Opts::from_url(&db_url)?;
     let pool = Pool::new(opts).unwrap();
     let mut conn = pool.get_conn().unwrap();
-    println!("{} - attempting connection", db_url);
+    println!("connection run func: {} - attempting connection", db_url);
 
     //get tables available within the database
     let table_stmt = format!("SHOW TABLES IN {}", dbn);
@@ -37,27 +37,50 @@ fn get_avail_tables(mut selection: Transaction, table_stmt: String) -> Vec<Strin
     let res:Result<Vec<String>> = selection.query(table_stmt);
     for row in res.iter(){
         let mut rowz = row.as_slice();     
-        println!(" Tables available are: {:?}, rows in database: {:?}", row, rowz);
+        println!("Get_avail_tables func: Tables available are: {:?}, rows in database: {:?}", row, rowz);
     }
     res.unwrap()
 }
 
-/*check if desired table selection exists and get other selections if more than one */ 
 
+/*check if desired table selection exists and get other selections if more than one */ 
 pub fn subscriber_selection (db_url: String, tables:Vec<String>) {
     let tables_avail = tables;
-    println!("Enter Car Id Table name");
-    let mut selected_table = String::new();
-    let response = std::io::stdin().read_line(&mut selected_table);
-    let sel_tables_as_str = str::replace(&selected_table, "\r\n", "");
-    //println!("trimmed is {:?}", sel_tables_as_str);
+    let mut test = 0;
+    let mut unknown_car_table = String::new();
+    let mut car_details_table= String::new();
+    while test == 0 {
 
-    if tables_avail.contains(&sel_tables_as_str) {
-        println!("The table exists in the database");
-        settings::run(db_url);
-        //dbInterface::add(); //added for testing
+        println!("Enter Name of Table holding unknown car ID's: ");
         
-    } else {
-        println!("That table does not exist in the database...please try again");
+        let response = std::io::stdin().read_line(&mut unknown_car_table);
+        let sel_tables_as_str = str::replace(&unknown_car_table, "\r\n", "");
+
+        println!("Enter Name of Table that will be storing obtained car details(**not the unknownID's table**): ");
+        
+        let car_tab = std::io::stdin().read_line(&mut car_details_table);
+        let formed_det_tab = str::replace(&car_details_table, "\r\n", "");
+
+        if tables_avail.contains(&sel_tables_as_str) {
+            println!("The unknown ID's table exists in the database!!");
+            test = 1;
+        } else {
+            println!("That table does not exist in the database...please try again");
+            test = 0;
+        }
+
+        if tables_avail.contains(&sel_tables_as_str) {
+            println!("The table exists in the database");
+            test = 1;
+        } else {
+            println!("That table does not exist in the database...please try again");
+            test = 0;
+        }
+        
     }
+    //only God knows why I had to reformat outside the while loop...-____-'
+    let sel_tables_as_str = str::replace(&unknown_car_table, "\r\n", "");
+    let formed_det_tab = str::replace(&car_details_table, "\r\n", "");
+    println!("connection>subscriber_selection func: car details table name: {:?}, and unknown table name: {:?}",car_details_table, unknown_car_table);
+    settings::run(db_url, formed_det_tab, sel_tables_as_str);
 }

@@ -70,6 +70,14 @@ pub fn run() -> () {
     let mut dbn= String::new();
     let dbN = std::io::stdin().read_line(&mut dbn);
     
+    // println!("Enter Name of Table holding unknown car info: ");
+    // let mut unknown_table= String::new();
+    // let unkn_tab = std::io::stdin().read_line(&mut unknown_table);
+
+    // println!("Enter Name of Table that will be storing obtained car details(**not the unknownID's table**): ");
+    // let mut car_details_table= String::new();
+    // let car_tab = std::io::stdin().read_line(&mut car_details_table);
+
     let mut dbu = DbUrl::new(dbt.as_str(), &usr.as_str(), &psw, &hst, &prt, &dbn);
     //may use regex to correct this later ---->
     let dburl: String = format!("{}://{}:{}@{}:{}/{}",dbt.trim(), usr.trim(), psw.trim(), hst.trim(), prt.trim(), dbn.trim());

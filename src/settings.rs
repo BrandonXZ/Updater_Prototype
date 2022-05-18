@@ -8,7 +8,7 @@ const LOGFILE: &str = "umler_updater-log.txt";
 const DB_REF_FILE: &str = "db_ref.txt";
 
 
-pub fn run(db_url:String) {
+pub fn run(db_url:String, car_details_table:String, unknown_car_table:String) {
     let current_db = db_url.as_bytes();
     let mut offset:usize;
     let mut holder = String::new();
@@ -79,7 +79,8 @@ pub fn run(db_url:String) {
         db_reference.write(creation_message.as_bytes());
         db_reference.write(current_db);
     }
-
+    add_table_of_unknowns(unknown_car_table);
+    add_car_details_table(car_details_table);
     println!("successfully setup the Umler updater program....\n");
 }
 
@@ -130,4 +131,24 @@ pub fn logthis_webService(Errornote:String, webservice_type:String) {
     //this should be either the request or response, message(Errornote) will tell the actual error/exception that occured...
     log.write(webservice_type.as_bytes());  
 
+}
+
+pub fn add_table_of_unknowns (car_details_table: String) {
+    let table_to_insert = format!("\n{} -Unknown Car ID Table", car_details_table);
+    let mut holder = String::new();
+    let mut db_reference = OpenOptions::new().read(true).write(true).open(DB_REF_FILE).unwrap();
+    let offset = db_reference.read_to_string(&mut holder).unwrap();
+    db_reference.seek(SeekFrom::Start(offset.try_into().unwrap()));
+    db_reference.write(table_to_insert.as_bytes());
+    println!("successfully saved unknown car table");
+}
+
+pub fn add_car_details_table (unknown_car_table:String) {
+    let table_to_insert = format!("\n{} -Car Detail Storage Table", unknown_car_table);
+    let mut holder = String::new();
+    let mut db_reference = OpenOptions::new().read(true).write(true).open(DB_REF_FILE).unwrap();
+    let offset = db_reference.read_to_string(&mut holder).unwrap();
+    db_reference.seek(SeekFrom::Start(offset.try_into().unwrap()));
+    db_reference.write(table_to_insert.as_bytes());
+    println!("successfully saved car details table");
 }
