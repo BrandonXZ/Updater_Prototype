@@ -18,7 +18,7 @@ pub fn run() {
     webservice_formatter(blank_ID);
     add();
     let unknown_table_temp_remove_me_before_production = get_unknown_ID_table();
-    println!("\nRun func: Name of unknown table pulled from file  --->{}\n", unknown_table_temp_remove_me_before_production.trim());
+    println!("\nRun func: Name of unknown table pulled from file  ---> {}\n", unknown_table_temp_remove_me_before_production.trim());
 
 }
 
@@ -123,7 +123,7 @@ pub fn get_unknown_ID_table () -> String {
 pub fn get_table_schema (current_connection: PooledConn) -> Result<(), Error> {
     let mut conn = current_connection;
     let car_details_table_pass = get_car_details_table();
-    let get_schema_stmt = format!("DESCRIBE {}", car_details_table_pass.trim());
+    let get_schema_stmt = format!("SHOW COLUMNS IN {}", car_details_table_pass.trim());
     println!("The Schema statement---> {}\n", get_schema_stmt);
     let mut selection = conn.start_transaction(TxOpts::default())?;
     let res:Vec<Row> = selection.query(get_schema_stmt).unwrap();
@@ -135,21 +135,18 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<(), Error> {
     to be extra greppy and string manipulative.....-_____-' */
     
 
-    for row in res{
+    for row in res{  //3 options are generated in loop due to the 3 column names we iterate through 
         println!("\ninside for loop...\n");
         let row1 = row.columns().to_vec();
         let row2 = row.columns_ref();
-        // println!("Row columns is:{:?}", row1);
-        // println!("\nRow columns_ref is:{:?}", row2);
-
-        for columns in row1{
+        
+        // let newattempt:String = mysql::from_value(row[1]);
+        println!("Column name value: {:?}\n", row[0]); //getting closer
+        for columns in row1.iter() {
             println!("->{:?}", columns.name_str());
-            // let converted = std::str::from_utf8(columns.name_ref());
-            // println!("Odd wrapper: {:?}", converted);
+            
         }
-        // for columnz in row2{   // does the same as above, only with pointers...
-        //     println!("column_ref: {:?}", columnz.name_str());
-        // }
+        
     }
    
     Ok(())
