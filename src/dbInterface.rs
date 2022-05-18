@@ -129,10 +129,28 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<(), Error> {
     let res:Vec<Row> = selection.query(get_schema_stmt).unwrap();
     println!("Row data returned: \n");
     println!("{:?}", res);
-    // for row in res.iter(){
-    //     let mut rowz = row;     
-    //     println!("Get_avail_tables func: Tables available are: {:?}, rows in database: {:?}", row, rowz);
-    //     println!("inside for loop");
-    // }
+
+
+    /*loop below unstable for now. Need to get what is returned after "row data returned:" to return just the column names or the formatter will have
+    to be extra greppy and string manipulative.....-_____-' */
+    
+
+    for row in res{
+        println!("\ninside for loop...\n");
+        let row1 = row.columns().to_vec();
+        let row2 = row.columns_ref();
+        // println!("Row columns is:{:?}", row1);
+        // println!("\nRow columns_ref is:{:?}", row2);
+
+        for columns in row1{
+            println!("->{:?}", columns.name_str());
+            // let converted = std::str::from_utf8(columns.name_ref());
+            // println!("Odd wrapper: {:?}", converted);
+        }
+        // for columnz in row2{   // does the same as above, only with pointers...
+        //     println!("column_ref: {:?}", columnz.name_str());
+        // }
+    }
+   
     Ok(())
  }
