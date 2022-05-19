@@ -132,31 +132,45 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<(), Error> {
     println!("{:?}", res);
 
 
-    /*loop below unstable for now. Need to get what is returned after "row data returned:" to return just the column names or the formatter will have
-    to be extra greppy and string manipulative.....-_____-' */
+    /*Working but very very clunky way of extracting the column name and data types needed without using metadata */
     
-
     for row in res{  //3 options are generated in loop due to the 3 column names we iterate through 
         let mut i = 0;
         println!("\ninside for loop...\n");
         let row1 = row.columns().to_vec();
         let row2 = row.columns_ref();
-        println!("\nThis is counter: {}", &i);
-        
-        println!("Column name value: {:?}\n", row[i]); //successfully pulling column names from query and converting from mysql value type below(odd bytes type)
+
+        //println!("\nThis is counter: {}", &i);
+        //println!("Column name value: {:?}\n", row[i]); 
+
+        //successfully pulling column names from query and converting from mysql value type below(odd bytes type)
         let conversion = row[0].clone();
         let conversion = match from_value_opt::<String>(conversion){
             Ok(string) => {
                 println!("String value of: {}", string);
-                // return Ok(());
+                // return Ok(()); //may remove, this was used in an example but may be a weird format thing
             }
             Err(FromValueError(conversion)) => () /*conversion*/,
         };
 
-        for columns in row1.iter() {
-            println!("->{:?}", columns.name_str());
+        let conversion2 = row[1].clone();
+        let conversion2 = match from_value_opt::<String>(conversion2){
+            Ok(string) => {
+                println!("String value of: {}", string);
+                // return Ok(());
+            }
+            Err(FromValueError(conversion2)) => () /*conversion2*/,
+        };
+
+        /*
+        Code below shows "subfields" for each item. a database can have tables, tables can have columns, rows, and schema info about the table
+        "subfields" in this context refers to info about, say, a column itself...
+        */
+
+        // for columns in row1.iter() {
+        //     println!("->{:?}", columns.name_str());
             
-        }
+        // }
         i = i+1;
     }
    

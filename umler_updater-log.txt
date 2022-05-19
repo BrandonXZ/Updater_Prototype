@@ -237,3 +237,11 @@ Error - This occurred due to Webservices issue: "No ID received for formatting",
 send function
 Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T11:26:51.931251500-04:00
 mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
+Error - This occurred due to Webservices issue: "No ID received for formatting", this occured @: 2022-05-19T11:36:27.813279200-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T11:36:27.838537700-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
+Error - This occurred due to Webservices issue: "No ID received for formatting", this occured @: 2022-05-19T11:38:03.575464500-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T11:38:03.596059400-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
