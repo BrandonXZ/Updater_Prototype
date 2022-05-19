@@ -1,5 +1,24 @@
-/* This module defines the functions that will scrub our unknown AEI table for new/unknown records and then add the newly obtained records received from umler
-* to the correct car table*/
+/* 
+* This module defines the functions that will scrub our unknown AEI table for new/unknown records and then add the newly obtained records received from umler
+* to the correct car table (see process order below)
+*
+* TO DO: 
+* still need to save the returned schema we are using to a vector or array and then convert to a struct (for use later?)
+* define function to search db_ref file for last equipment Id passed to umler and check for new ID's in "unknown car ID" table using that
+* define function that will generate MySQL Insert command for newly obtained data
+* Create Error handling schema both for umler call and for mysql insert.(should be minimal from mysql since we're pulling updated schema each time.)
+* ^^but may require converting between datatypes if something changes on umlers end.
+*
+***********************************************PROCESS ORDER****************************************************************** 
+* Create or obtain existing pooled connection.
+* Query our Car detail table for columns and data-types to ensure we grab the relevant information (must be dynamic in case table schema changes).
+* Query unknown Id tables for the ID's we will be using in the umler webservice request call using last equipment ID used(saved in db_reference file)
+* Create and send the umler webservice call (occuring in WSDL_SEND.RS) 
+* Obtain and convert response from umler request using relevent schema info pulled from above step(occuring in WSDL_RECEIVE.RS)
+* post newly obtained info to our mysql "car details" table.
+* save last inserted equipment ID to the db reference save-file and overwriting the old.
+* log successful completion timestamp
+*/
 #![allow(unused_assignments)]
 #![allow(unused_variables)]
 #![allow(unused_must_use)]
@@ -15,12 +34,26 @@ const DB_REF_FILE: &str = "db_ref.txt";
 //check schema, check unknown car table, apply any necessary conversions/formatting, send the request via umler webservices(by calling wsdl_send module's function)
 pub fn run() {
 
-    let blank_ID = "".to_string();
-    webservice_formatter(blank_ID);
+    let mut current_ID = "".to_string();
+    println!("\nRun func: ID --> {:?}", current_ID.clone());
+    let mut current_connection = db_connection().unwrap();
+    println!("\nRun func: conn --> {:?}", &current_connection);
+    let unknown_car_table = get_unknown_ID_table();
+    println!("\nRun func: unknown table --> {}", unknown_car_table.clone());
+    let car_details_table = get_car_details_table();
+    println!("\nRun func: detail table --> {}", car_details_table.clone());
+    let unk_stmt = prep_unknown_Id_query(unknown_car_table.trim().to_string());
+    println!("\nRun func: stmt --> {}", unk_stmt.clone());
+    let last_searched = get_last_unknown();
+    println!("\nRun func: last--> {}", last_searched.clone());
+    let current_schema = get_table_schema(current_connection).unwrap(); //not returning anything need to tweak return type for this when vec is created
+    for i in current_schema {println!("\nname: {:?}", i);}
+    //println!("Run: {}"); //see above comment!!
+    let current_connection = db_connection().unwrap();
+    let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
+    println!("\nRun func: car ID's{:?}", unknown_car_IDs.clone());
+    for i in unknown_car_IDs {webservice_formatter(i.clone()); println!("i is currently: {}", i); }
     add();
-    let unknown_table_temp_remove_me_before_production = get_unknown_ID_table();
-    println!("\nRun func: Name of unknown table pulled from file  ---> {}\n", unknown_table_temp_remove_me_before_production.trim());
-
 }
 
 
@@ -30,24 +63,9 @@ pub fn add() {
     println!("add func: add functionality currently being coded...");
     //arg type almost guaranteed to change and be a vector or array of webservice response type or json to be decoded, formatted then added to the db.
     //function contents are just to test something and will change
-
-    //This reads the db reference file to get the db connection info being used.
-    let mut db_reference = OpenOptions::new().read(true).write(true).open(DB_REF_FILE).unwrap();
+    let holder = get_db_url();
     let test_message = "can't add to db because ID was blank".to_string();
-    let mut holder = String::new();
-    let mut reader = BufReader::new(db_reference);
-    let db_string = reader.read_line(&mut holder);
-    holder.clear();
-    let db_string = reader.read_line(&mut holder);
-    let holder = str::replace(&holder, "\n", "");
-    // println!("add func:Current length in bytes is: {:?}, the value in db-string is: {:?}", db_string.unwrap(), holder);
     settings::logthis_dbRelated(test_message, holder);
-    let current_connection = db_connection().unwrap();
-    get_table_schema(current_connection);
-
-   
-
-
     //db_reference.seek(SeekFrom::Start(offset.try_into().unwrap())); //may need later to move cursor but probably not with above read line method
 }
 
@@ -58,15 +76,19 @@ either by adding 0's to beginning of the letter portion of the "String"(Mfr) or 
 This is temporarily set up for testing but will need to read value of sql query response when sql process is finished. (currently coding)*/
 
 pub fn webservice_formatter(current_ID:String) {
-
     let webservice_comm_type = "send function".to_string();
     println!("Web Service Formatter functionality not added yet...");
     if current_ID.is_empty(){
         let Errornote = "No ID received for formatting".to_string();
-        settings::logthis_webService(Errornote, webservice_comm_type);
+        settings::logthis_webService(Errornote, webservice_comm_type.clone());
         
+    } else {
+        
+        let lognote = format!("Current unknown car ID is-----> {}", current_ID);
+        println!("{}", lognote);
+        settings::logthis_webService(lognote, webservice_comm_type);
     }
-        // println!("webservice_comm_func: Current ID is ---->{:?}", current_ID);
+
 }
 
 
@@ -83,7 +105,7 @@ pub fn db_connection () -> Result<PooledConn, Error> {
     let opts = Opts::from_url(&db_url)?;
     let pool = Pool::new(opts).unwrap();
     let mut conn = pool.get_conn().unwrap();
-    println!("{} - attempting connection \n", db_url);
+    //println!("{} - attempting connection", db_url);
     Ok(conn)
 }
 
@@ -121,33 +143,34 @@ pub fn get_unknown_ID_table () -> String {
     sel_tables_as_str
 }
 
-pub fn get_table_schema (current_connection: PooledConn) -> Result<(), Error> {
+pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, Error> {
     let mut conn = current_connection;
     let car_details_table_pass = get_car_details_table();
     let get_schema_stmt = format!("SHOW COLUMNS IN {}", car_details_table_pass.trim());
     println!("The Schema statement---> {}\n", get_schema_stmt);
+    let mut return_vec:Vec<String>= vec![];
     let mut selection = conn.start_transaction(TxOpts::default())?;
     let res:Vec<Row> = selection.query(get_schema_stmt).unwrap();
-    println!("Row data returned: \n");
-    println!("{:?}", res);
+    // println!("Row data returned: \n"); //raw example of what is returned from query...
+    // println!("{:?}", res);
 
 
     /*Working but very very clunky way of extracting the column name and data types needed without using metadata */
-    
+    let mut i = 0;
     for row in res{  //3 options are generated in loop due to the 3 column names we iterate through 
-        let mut i = 0;
-        println!("\ninside for loop...\n");
+        // let mut i = 0;
+        //println!("\ninside for loop...\n");
         let row1 = row.columns().to_vec();
         let row2 = row.columns_ref();
 
-        //println!("\nThis is counter: {}", &i);
-        //println!("Column name value: {:?}\n", row[i]); 
+        println!("\nThis is counter: {}", &i);
 
         //successfully pulling column names from query and converting from mysql value type below(odd bytes type)
         let conversion = row[0].clone();
         let conversion = match from_value_opt::<String>(conversion){
             Ok(string) => {
-                println!("String value of: {}", string);
+                println!("Column: {}", string);
+                return_vec.push(string);
                 // return Ok(()); //may remove, this was used in an example but may be a weird format thing
             }
             Err(FromValueError(conversion)) => () /*conversion*/,
@@ -156,7 +179,8 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<(), Error> {
         let conversion2 = row[1].clone();
         let conversion2 = match from_value_opt::<String>(conversion2){
             Ok(string) => {
-                println!("String value of: {}", string);
+                println!("Data-Type: {}", string);
+                return_vec.push(string);
                 // return Ok(());
             }
             Err(FromValueError(conversion2)) => () /*conversion2*/,
@@ -173,6 +197,70 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<(), Error> {
         // }
         i = i+1;
     }
-   
-    Ok(())
+
+    Ok(return_vec)
+ }
+
+ //This reads the db reference file to get the db connection info being used.
+ pub fn get_db_url()-> String {
+    let mut db_reference = OpenOptions::new().read(true).write(true).open(DB_REF_FILE).unwrap();
+    let mut holder = String::new();
+    let mut reader = BufReader::new(db_reference);
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    let holder = str::replace(&holder, "\n", "");
+    holder
+ }
+
+//This preps the MySQL statement for a select transaction
+ pub fn prep_unknown_Id_query (unknown_Id_table:String) -> String {
+    let get_schema_stmt = format!("SELECT {}.Equipment_id from db_centraco3.{}", unknown_Id_table.trim(), unknown_Id_table.trim());
+    println!("The Schema statement---> {}\n", get_schema_stmt);
+    
+    return get_schema_stmt;
+ }
+
+ pub fn scrub_unknowns (current_connection:PooledConn, stmt:String) -> Vec<String>{
+    let mut conn = current_connection;
+    let mut res:Vec<String> =  conn.query(stmt).unwrap();
+    let tester = res.clone();
+    //let return_vec:Vec<String>= vec![]; //just incase I have to append each iteration by pushing onto a vec...
+        for r in tester {
+        println!("Result from query is: {}", r);
+        }
+    res
+ }
+
+
+ pub fn get_last_unknown () -> String {
+    let mut db_reference = OpenOptions::new().read(true).write(true).open(DB_REF_FILE).unwrap();
+    let test_message = "can't add to db because ID was blank".to_string();
+    let mut holder = String::new();
+    let mut reader = BufReader::new(db_reference);
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    let mut last_unknown = str::replace(&holder, "-last ID searched", "");
+
+    let current_ID = last_unknown.clone();
+    if current_ID.is_empty(){
+        last_unknown = "null, no ID present".to_string();
+        let Errornote = format!("last unknown ID searched was not found in db reference file...{}", last_unknown);
+        settings::logthis(Errornote);
+        
+    } else {
+        
+        let lognote = format!("Current unknown car ID is-----> {}", current_ID);
+        println!("{}", lognote);
+        //settings::logthis(lognote); no need to log this atm
+    }
+    println!("last ID sent to umler was: {}", last_unknown.clone());
+    last_unknown 
  }
