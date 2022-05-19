@@ -207,3 +207,33 @@ Error - This occurred due to Webservices issue: "No ID received for formatting",
 send function
 Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-18T16:28:23.123529200-04:00
 mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
+Error - This occurred due to Webservices issue: "No ID received for formatting", this occured @: 2022-05-19T10:53:25.749863300-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T10:53:25.772762100-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
+Error - This occurred due to Webservices issue: "No ID received for formatting", this occured @: 2022-05-19T10:53:54.795247200-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T10:53:54.820685500-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
+Error - This occurred due to Webservices issue: "No ID received for formatting", this occured @: 2022-05-19T11:13:11.020357400-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T11:13:11.095106400-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
+Error - This occurred due to Webservices issue: "No ID received for formatting", this occured @: 2022-05-19T11:16:43.398994600-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T11:16:43.427381300-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
+Error - This occurred due to Webservices issue: "No ID received for formatting", this occured @: 2022-05-19T11:17:49.283272-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T11:17:49.309606600-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
+Error - This occurred due to Webservices issue: "No ID received for formatting", this occured @: 2022-05-19T11:23:28.081772900-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T11:23:28.115311100-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb
+Error - This occurred due to internal code exception: "Incorrect argument passed when starting, if attempting an automated run, or reconfig see documentation...", this occured @: 2022-05-19T11:26:34.765702900-04:00
+
+Error - This occurred due to Webservices issue: "No ID received for formatting", this occured @: 2022-05-19T11:26:51.914516700-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T11:26:51.931251500-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/testdb

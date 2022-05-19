@@ -1,12 +1,13 @@
 /* This module defines the functions that will scrub our unknown AEI table for new/unknown records and then add the newly obtained records received from umler
 * to the correct car table*/
+#![allow(unused_assignments)]
 #![allow(unused_variables)]
 #![allow(unused_must_use)]
 #![allow(unused_mut)]
 use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRead}};
 
-use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row};
-use mysql_common::uuid::Bytes;
+use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row, from_value_opt, FromValueError};
+use mysql_common::*;
 
 use crate::settings;
 const DB_REF_FILE: &str = "db_ref.txt";
@@ -136,17 +137,27 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<(), Error> {
     
 
     for row in res{  //3 options are generated in loop due to the 3 column names we iterate through 
+        let mut i = 0;
         println!("\ninside for loop...\n");
         let row1 = row.columns().to_vec();
         let row2 = row.columns_ref();
+        println!("\nThis is counter: {}", &i);
         
-        // let newattempt:String = mysql::from_value(row[1]);
-        println!("Column name value: {:?}\n", row[0]); //getting closer
+        println!("Column name value: {:?}\n", row[i]); //successfully pulling column names from query and converting from mysql value type below(odd bytes type)
+        let conversion = row[0].clone();
+        let conversion = match from_value_opt::<String>(conversion){
+            Ok(string) => {
+                println!("String value of: {}", string);
+                // return Ok(());
+            }
+            Err(FromValueError(conversion)) => () /*conversion*/,
+        };
+
         for columns in row1.iter() {
             println!("->{:?}", columns.name_str());
             
         }
-        
+        i = i+1;
     }
    
     Ok(())
