@@ -1,4 +1,3 @@
-#![allow(non_snake_case)]
 /* Author: Brandon Minter
 * Date of release | Q2 '22
 * Duos Technologies Inc. 05/10/2022
@@ -12,6 +11,7 @@
 * Our databases for each location may need a program to interface with our main db and sync the newly obtained information 
 * since we have unique db's running at each site. This program will also log any issue's should they arise during the process. 
 */
+#![allow(non_snake_case)]
 #![allow(unused_imports)]
 mod connection;
 mod pathprep;

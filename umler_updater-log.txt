@@ -39,3 +39,17 @@ Error - This occurred due to internal code exception: "last unknown ID searched 
 
 Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-19T18:02:28.315392300-04:00
 mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T11:52:36.392353600-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T11:52:36.647690500-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T11:58:52.085174400-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T11:58:52.355004800-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "Incorrect argument passed when starting, if attempting an automated run, or reconfig see documentation...", this occured @: 2022-05-23T12:01:48.827914500-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T12:02:12.138231400-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:02:12.344434700-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
