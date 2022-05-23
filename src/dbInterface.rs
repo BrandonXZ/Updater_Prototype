@@ -47,8 +47,8 @@ pub fn run() {
     let last_searched = get_last_unknown();
     println!("\nRun func: last--> {}", last_searched.clone());
     let current_schema = get_table_schema(current_connection).unwrap(); //not returning anything need to tweak return type for this when vec is created
-    for i in current_schema {println!("\nname: {:?}", i);}
-    //println!("Run: {}"); //see above comment!!
+    for i in current_schema.iter() {println!("\nname: {:?}", i);}
+    println!("Run func: Current Schema {:?}", current_schema); //see above comment!!
     let current_connection = db_connection().unwrap();
     let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
     println!("\nRun func: car ID's{:?}", unknown_car_IDs.clone());
