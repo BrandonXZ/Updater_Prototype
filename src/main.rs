@@ -20,6 +20,7 @@ mod settings;
 mod menu;
 mod dbInterface;
 mod splash;
+mod wsdl_send;
 //mod mysql_typecheck; //used for testing for schema !!unsafe atm!!
 
 use std::{env, ptr::null}; 

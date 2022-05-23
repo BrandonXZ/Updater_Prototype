@@ -23,12 +23,12 @@
 #![allow(unused_variables)]
 #![allow(unused_must_use)]
 #![allow(unused_mut)]
-use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRead}};
+use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRead}, ptr::null};
 
 use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row, from_value_opt, FromValueError};
 use mysql_common::*;
 
-use crate::settings;
+use crate::{settings, wsdl_send};
 const DB_REF_FILE: &str = "db_ref.txt";
 
 //check schema, check unknown car table, apply any necessary conversions/formatting, send the request via umler webservices(by calling wsdl_send module's function)
@@ -50,21 +50,40 @@ pub fn run() {
     for i in current_schema.iter() {println!("\nname: {:?}", i);}
     println!("Run func: Current Schema {:?}", current_schema); //see above comment!!
     let current_connection = db_connection().unwrap();
+    let current_connection2 = db_connection().unwrap();
+    let current_connection3 = db_connection().unwrap();
+    let current_connection4 = db_connection().unwrap();
     // println!("updated connection is: \n {:?}", &current_connection);
     let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
     println!("\nRun func: car ID's{:?}", unknown_car_IDs.clone());
-    for i in unknown_car_IDs.iter() {webservice_formatter(i.clone()); println!("i is currently: {}", i); }
-    println!("Run func: Unknown Cars {:?}", unknown_car_IDs);
-    add();
+    if unknown_car_IDs.len() >= 2 {
+        for i in unknown_car_IDs.iter() {webservice_formatter(i.clone()); println!("i is currently: {}", i); } 
+        let wsdl_response = wsdl_send::dummysend_multiple(current_connection2, unknown_car_IDs.clone());
+        add(current_connection4, wsdl_response.unwrap(), car_details_table);
+    } else {
+        let wsdl_response = wsdl_send::dummysend_single(current_connection3, unknown_car_IDs[0].clone());
+        let mut wsdl_vec:Vec<String> = vec![];
+        wsdl_vec.push(wsdl_response.unwrap());
+        add(current_connection4, wsdl_vec, car_details_table);
+    }
+    println!("Run func: Unknown Cars {:?}", unknown_car_IDs.clone());
+    
 }
 
 
 //add the returned car data(response from webservice) to the car info table or log if errors occur
-pub fn add() { 
-    let current_ID: String = "".to_string();
+pub fn add(current_connection: PooledConn, current_ID:Vec<String>, car_details_table: String ) { 
+    let mut conn = current_connection;
+    let default_ID: String = "".to_string();
+    let insert_stmt = format!("INSERT INTO {} VALUES", car_details_table.trim());
+    println!("The Schema statement---> {}\n", insert_stmt);
+    let selection = conn.exec_drop(insert_stmt, ());
+    if current_ID.len() > 1 {
+
+    } else {
+        let currentID = current_ID[0].clone(); 
+    }
     println!("add func: add functionality currently being coded...");
-    //arg type almost guaranteed to change and be a vector or array of webservice response type or json to be decoded, formatted then added to the db.
-    //function contents are just to test something and will change
     let holder = get_db_url();
     let test_message = "can't add to db because ID was blank".to_string();
     settings::logthis_dbRelated(test_message, holder);
@@ -72,10 +91,10 @@ pub fn add() {
 }
 
 
-
-/*performs formatting to equipment Id required for webservice. This needs to be padded to be exactly 10 alphanumeric items long, 
-either by adding 0's to beginning of the letter portion of the "String"(Mfr) or the numeric portion(ID)
-This is temporarily set up for testing but will need to read value of sql query response when sql process is finished. (currently coding)*/
+/* May be added to wsdl_send module for cleaner code an better org. 
+* performs formatting to equipment Id required for webservice. This needs to be padded to be exactly 10 alphanumeric items long, 
+* either by adding 0's to beginning of the letter portion of the "String"(Mfr) or the numeric portion(ID)
+* This is temporarily set up for testing but will need to read value of sql query response when sql process is finished. (currently coding)*/
 
 pub fn webservice_formatter(current_ID:String) {
     let webservice_comm_type = "send function".to_string();
@@ -198,7 +217,6 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, 
         // }
         i = i+1;
     }
-
     Ok(return_vec)
  }
 
@@ -222,7 +240,7 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, 
     return get_schema_stmt;
  }
 
- pub fn scrub_unknowns (current_connection:PooledConn, stmt:String) -> Vec<String>{
+ pub fn scrub_unknowns (current_connection:PooledConn, stmt:String) -> Vec<String> {
     let mut conn = current_connection;
     println!("Query stmt is: {:?}", &stmt);
     let mut res:Vec<String> =  conn.query(stmt).unwrap();
@@ -232,6 +250,12 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, 
         println!("\nResult from query is: {}", r);
         }
         println!("\nThis is tester in scrub unknowns Func: {:?}", tester);
+
+        if tester.len() < 2 {
+            println!("# of unknown cars returned is: {}", tester.len());
+        } else if tester.len() >= 2 {
+            println! ("# of unknown cars returned is: {}", tester.len());
+        }
     res
  }
 

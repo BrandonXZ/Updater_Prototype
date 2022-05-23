@@ -101,3 +101,18 @@ Logging: "Current unknown car ID is-----> Rust_tester_carID_2", Action occured @
 
 Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T13:08:10.394881800-04:00
 mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T16:46:50.372937100-04:00
+
+Logging: "Current unknown car ID is-----> 3Rust_tester_carID_3", Action occured @: 2022-05-23T16:46:50.920397900-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID", Action occured @: 2022-05-23T16:46:50.955505300-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID_2", Action occured @: 2022-05-23T16:46:50.994795500-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T16:49:30.105854900-04:00
+
+Logging: "Current unknown car ID is-----> 3Rust_tester_carID_3", Action occured @: 2022-05-23T16:49:31.084595-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID", Action occured @: 2022-05-23T16:49:31.132364200-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID_2", Action occured @: 2022-05-23T16:49:31.184358-04:00
