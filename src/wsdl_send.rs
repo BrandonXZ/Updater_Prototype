@@ -1,8 +1,12 @@
 /* 
 * This module defines the codegen functions used to append car AEI's to the wsdl request being sent to umler webservices.
-* For ease of coding, the receive function will be defined on a differen module as it will likely be async.
+* For ease of coding, the receive function will be defined on a different module as it will likely be async.
 * 
 */
+//This needs to be reworked, Idea for mock up is to use either send_single or send_multiple which emulates umler by getting info from a third table and returning it
+//as a faux umler webservice response 05/23 current issue is the response for this which is being wrapped in rust formatting stuff [""] which is messing up db search
+//need to either create a struct or come up with a way to send SQL statements of varying length. //look into the join keyword as this works after rust 1.3 and 
+//will remove unnecessary brackets and quotation marks...
 #![allow(unused_variables)]
 
 
@@ -15,7 +19,7 @@ pub fn dummysend_single(db_connection:PooledConn, unknown_ID:String) -> Result<S
 
     let mut conn = db_connection.unwrap();
     let search_stmt = format!("SELECT \"Equipment_id\" FROM dummy_umler_webservice WHERE dum_search_key = {}", unknown_ID).to_string();
-    println!("\ndebug value of search stmt: {}\n", search_stmt.clone());
+    println!("\ndebug value of search stmt-single func: {}\n", search_stmt.clone());
     let mut selection = conn.start_transaction(TxOpts::default())?;
     let res:Vec<Row> = selection.query(search_stmt).unwrap();
     let mut return_vec:Vec<String>= vec![];
@@ -35,8 +39,14 @@ pub fn dummysend_single(db_connection:PooledConn, unknown_ID:String) -> Result<S
 
 pub fn dummysend_multiple(db_connection:PooledConn, unknown_IDs: Vec<String>) -> Result<Vec<String>, Error> {
     let mut conn = db_connection.unwrap();
+    let slot = "{}".to_string();
+    let mut slots = vec![];
+    for i in &unknown_IDs {
+        slots.push(slot.clone());
+    }
+    println!("Total for slots: {:?}", slots);
     let search_stmt = format!("SELECT \"Equipment_id\" from dummy_umler_webservice where dum_search_key = {:?}", unknown_IDs).to_string();
-    println!("\ndebug value of search stmt: {}\n", search_stmt.clone());
+    println!("\ndebug value of search stmt-multi func: {}\n", search_stmt.clone());
     let mut selection = conn.start_transaction(TxOpts::default())?;
     let res:Vec<Row> = selection.query(search_stmt).unwrap();
     let mut return_vec:Vec<String>= vec![];
