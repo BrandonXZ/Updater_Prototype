@@ -53,3 +53,51 @@ Error - This occurred due to internal code exception: "last unknown ID searched 
 
 Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:02:12.344434700-04:00
 mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T12:11:08.872518200-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:11:09.121853-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T12:13:16.245951700-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:13:16.546820600-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T12:14:27.706966800-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:14:27.957457500-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T12:23:27.590374800-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:23:27.832341300-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T12:26:05.324070600-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:26:05.549796200-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T12:28:54.495373300-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:28:54.712486100-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T12:30:26.629531600-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:30:26.866579400-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T12:57:38.785486700-04:00
+
+Error - This occurred due to Webservices issue: "Current unknown car ID is-----> 3Rust_tester_carID_3", this occured @: 2022-05-23T12:57:39.061149400-04:00
+send function
+Error - This occurred due to Webservices issue: "Current unknown car ID is-----> Rust_tester_carID", this occured @: 2022-05-23T12:57:39.081450-04:00
+send function
+Error - This occurred due to Webservices issue: "Current unknown car ID is-----> Rust_tester_carID_2", this occured @: 2022-05-23T12:57:39.102799200-04:00
+send function
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T12:57:39.121946800-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-23T13:08:09.965995900-04:00
+
+Logging: "Current unknown car ID is-----> 3Rust_tester_carID_3", Action occured @: 2022-05-23T13:08:10.287827200-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID", Action occured @: 2022-05-23T13:08:10.331716400-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID_2", Action occured @: 2022-05-23T13:08:10.363436700-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-23T13:08:10.394881800-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3

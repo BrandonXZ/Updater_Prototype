@@ -84,6 +84,20 @@ pub fn run(db_url:String, car_details_table:String, unknown_car_table:String) {
     println!("successfully setup the Umler updater program....\n");
 }
 
+pub fn logthis_nonError(Errornote: String) {
+    let current_time = chrono::Local::now();
+    let mut log = OpenOptions::new().read(true).write(true).open(LOGFILE).unwrap();
+    let mut holder = String::new();
+    let offset:usize;
+
+    offset = log.read_to_string(&mut holder).unwrap();
+    log.seek(SeekFrom::Start(offset.try_into().unwrap()));
+
+    let message = format!("\nLogging: {:?}, Action occured @: {:?}\n", Errornote, current_time);
+    println!("{}", message);
+    log.write(message.as_bytes());
+}
+
 pub fn logthis(Errornote: String) {
     let current_time = chrono::Local::now();
     let mut log = OpenOptions::new().read(true).write(true).open(LOGFILE).unwrap();

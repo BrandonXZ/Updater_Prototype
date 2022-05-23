@@ -50,9 +50,11 @@ pub fn run() {
     for i in current_schema.iter() {println!("\nname: {:?}", i);}
     println!("Run func: Current Schema {:?}", current_schema); //see above comment!!
     let current_connection = db_connection().unwrap();
+    // println!("updated connection is: \n {:?}", &current_connection);
     let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
     println!("\nRun func: car ID's{:?}", unknown_car_IDs.clone());
-    for i in unknown_car_IDs {webservice_formatter(i.clone()); println!("i is currently: {}", i); }
+    for i in unknown_car_IDs.iter() {webservice_formatter(i.clone()); println!("i is currently: {}", i); }
+    println!("Run func: Unknown Cars {:?}", unknown_car_IDs);
     add();
 }
 
@@ -83,10 +85,9 @@ pub fn webservice_formatter(current_ID:String) {
         settings::logthis_webService(Errornote, webservice_comm_type.clone());
         
     } else {
-        
         let lognote = format!("Current unknown car ID is-----> {}", current_ID);
         println!("{}", lognote);
-        settings::logthis_webService(lognote, webservice_comm_type);
+        settings::logthis_nonError(lognote);
     }
 
 }
@@ -223,12 +224,14 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, 
 
  pub fn scrub_unknowns (current_connection:PooledConn, stmt:String) -> Vec<String>{
     let mut conn = current_connection;
+    println!("Query stmt is: {:?}", &stmt);
     let mut res:Vec<String> =  conn.query(stmt).unwrap();
     let tester = res.clone();
     //let return_vec:Vec<String>= vec![]; //just incase I have to append each iteration by pushing onto a vec...
-        for r in tester {
-        println!("Result from query is: {}", r);
+        for r in tester.iter() {
+        println!("\nResult from query is: {}", r);
         }
+        println!("\nThis is tester in scrub unknowns Func: {:?}", tester);
     res
  }
 
