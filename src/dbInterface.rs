@@ -19,6 +19,7 @@
 * save last inserted equipment ID to the db reference save-file and overwriting the old.
 * log successful completion timestamp
 */
+
 #![allow(unused_assignments)]
 #![allow(unused_variables)]
 #![allow(unused_must_use)]
@@ -27,13 +28,13 @@ use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRea
 
 use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row, from_value_opt, FromValueError};
 use mysql_common::*;
-
 use crate::{settings, wsdl_send};
+
 const DB_REF_FILE: &str = "db_ref.txt";
 
 //check schema, check unknown car table, apply any necessary conversions/formatting, send the request via umler webservices(by calling wsdl_send module's function)
 pub fn run() {
-
+    let db_url = get_db_url();
     let mut current_ID = "".to_string();
     println!("\nRun func: ID --> {:?}", current_ID.clone());
     let mut current_connection = db_connection().unwrap();
@@ -52,22 +53,17 @@ pub fn run() {
     let current_connection = db_connection().unwrap();
     let current_connection2 = db_connection().unwrap();
     let current_connection3 = db_connection().unwrap();
-    let current_connection4 = db_connection().unwrap();
     // println!("updated connection is: \n {:?}", &current_connection);
     let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
     println!("\nRun func: car ID's{:?}", unknown_car_IDs.clone());
     if unknown_car_IDs.len() >= 2 {
-        for i in unknown_car_IDs.iter() {webservice_formatter(i.clone()); println!("i is currently: {}", i); } 
-        let wsdl_response = wsdl_send::dummysend_multiple(current_connection2, unknown_car_IDs.clone());
-        add(current_connection4, wsdl_response.unwrap(), car_details_table);
-    } else {
-        let wsdl_response = wsdl_send::dummysend_single(current_connection3, unknown_car_IDs[0].clone());
-        let mut wsdl_vec:Vec<String> = vec![];
-        wsdl_vec.push(wsdl_response.unwrap());
-        add(current_connection4, wsdl_vec, car_details_table);
-    }
-    println!("Run func: Unknown Cars {:?}", unknown_car_IDs.clone());
-    
+        for i in unknown_car_IDs.iter() {webservice_formatter(i.clone()); println!("\ni is currently: {}\n", i); } 
+
+    let wsdl_stmt = wsdl_send::db_statement_formatter(unknown_car_IDs.clone());
+    let wsdl_response = wsdl_send::dummy_wsdl_send(current_connection2, wsdl_stmt, db_url);
+    add(current_connection3, wsdl_response.unwrap(), car_details_table);
+
+    println!("\nRun func: Unknown Cars {:?}", unknown_car_IDs.clone()); 
 }
 
 
@@ -77,7 +73,7 @@ pub fn add(current_connection: PooledConn, current_ID:Vec<String>, car_details_t
     let default_ID: String = "".to_string();
     let insert_stmt = format!("INSERT INTO {} VALUES", car_details_table.trim());
     println!("The Schema statement---> {}\n", insert_stmt);
-    let selection = conn.exec_drop(insert_stmt, ());
+    //let selection = conn.exec_drop(insert_stmt, ());
     if current_ID.len() > 1 {
 
     } else {
@@ -99,10 +95,11 @@ pub fn add(current_connection: PooledConn, current_ID:Vec<String>, car_details_t
 pub fn webservice_formatter(current_ID:String) {
     let webservice_comm_type = "send function".to_string();
     println!("Web Service Formatter functionality not added yet...");
-    if current_ID.is_empty(){
+
+    if current_ID.is_empty() {
         let Errornote = "No ID received for formatting".to_string();
         settings::logthis_webService(Errornote, webservice_comm_type.clone());
-        
+
     } else {
         let lognote = format!("Current unknown car ID is-----> {}", current_ID);
         println!("{}", lognote);
@@ -291,3 +288,5 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, 
     println!("last ID sent to umler was: {}", last_unknown.clone());
     last_unknown 
  }
+
+}
