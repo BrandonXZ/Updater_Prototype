@@ -1,4 +1,4 @@
-db_ref.txt was created on 2022-05-19T13:26:59.242860600-04:00 
+db_ref.txt was created on 2022-05-25T13:54:30.751202200-04:00 
 mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
-tbl_umler -Unknown Car ID Table
-dummy_umler_trunc_data -Car Detail Storage Table
+tbl_unknown_ids -Unknown Car ID Table
+dummy_blank_detail_table -Car Detail Storage Table

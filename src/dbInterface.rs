@@ -8,6 +8,7 @@
 * define function that will generate MySQL Insert command for newly obtained data
 * Create Error handling schema both for umler call and for mysql insert.(should be minimal from mysql since we're pulling updated schema each time.)
 * ^^but may require converting between datatypes if something changes on umlers end.
+* 
 *
 ***********************************************PROCESS ORDER****************************************************************** 
 * Create or obtain existing pooled connection.
@@ -28,7 +29,7 @@ use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRea
 
 use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row, from_value_opt, FromValueError};
 use mysql_common::*;
-use crate::{settings, wsdl_send};
+use crate::{settings, wsdl_send, dbStructs};
 
 const DB_REF_FILE: &str = "db_ref.txt";
 
@@ -64,6 +65,7 @@ pub fn run() {
     add(current_connection3, wsdl_response.unwrap(), car_details_table);
 
     println!("\nRun func: Unknown Cars {:?}", unknown_car_IDs.clone()); 
+    println!("\nEnd of run function...\n");
 }
 
 
@@ -80,6 +82,8 @@ pub fn add(current_connection: PooledConn, current_ID:Vec<String>, car_details_t
         let currentID = current_ID[0].clone(); 
     }
     println!("add func: add functionality currently being coded...");
+
+    //dbStructs::printStruct();
     let holder = get_db_url();
     let test_message = "can't add to db because ID was blank".to_string();
     settings::logthis_dbRelated(test_message, holder);

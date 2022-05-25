@@ -11,6 +11,7 @@
 * Our databases for each location may need a program to interface with our main db and sync the newly obtained information 
 * since we have unique db's running at each site. This program will also log any issue's should they arise during the process. 
 */
+
 #![allow(non_snake_case)]
 #![allow(unused_imports)]
 mod connection;
@@ -27,9 +28,7 @@ mod wsdl_send;
 use std::{env, ptr::null}; 
 
 fn main() { 
-    /* Rust oddly enough doesn't allow you to check if a non-existent array/vector element is null, I technnically could've
-    worked with passing arguments during call by using an array and checking the length of the array to deduce if an arg was passed but
-    arrays aren't really growable like vectors making additions later on a tiny bit more tedious.*/
+    
     let mut args:Vec<String> = env::args().collect();
     let auto_command = String::from("automated_run");
     args.push("blank".to_string());     

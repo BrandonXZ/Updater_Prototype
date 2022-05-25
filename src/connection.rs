@@ -32,7 +32,7 @@ pub fn run(path: String, dbn: &str) -> Result<()> {
 }
 
  //code following this comment really just checks the database connection and access to specified tables.
-
+ //Need to add something to loop through the availabel tables for ease of reading and cleaner look.
 fn get_avail_tables(mut selection: Transaction, table_stmt: String) -> Vec<String> {
     let res:Result<Vec<String>> = selection.query(table_stmt);
     for row in res.iter(){
@@ -69,8 +69,8 @@ pub fn subscriber_selection (db_url: String, tables:Vec<String>) {
             test = 0;
         }
 
-        if tables_avail.contains(&sel_tables_as_str) {
-            println!("The table exists in the database");
+        if tables_avail.contains(&formed_det_tab) {
+            println!("The details table exists in the database");
             test = 1;
         } else {
             println!("That table does not exist in the database...please try again");
