@@ -87,3 +87,72 @@ Logging: "Current unknown car ID is-----> Rust_tester_carID_2", Action occured @
 
 Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-25T18:13:01.451131-04:00
 mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T11:16:39.011547100-04:00
+
+Logging: "Current unknown car ID is-----> 3Rust_tester_carID_3", Action occured @: 2022-05-26T11:16:39.455110500-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID", Action occured @: 2022-05-26T11:16:39.465339200-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID_2", Action occured @: 2022-05-26T11:16:39.474925600-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-26T11:16:39.535130200-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T12:05:02.142534100-04:00
+
+Logging: "Current unknown car ID is-----> 3Rust_tester_carID_3", Action occured @: 2022-05-26T12:05:02.621098500-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID", Action occured @: 2022-05-26T12:05:02.636498600-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID_2", Action occured @: 2022-05-26T12:05:02.651583900-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T12:12:47.599079300-04:00
+
+Logging: "Current unknown car ID is-----> 3Rust_tester_carID_3", Action occured @: 2022-05-26T12:12:47.961183700-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID", Action occured @: 2022-05-26T12:12:47.974488600-04:00
+
+Logging: "Current unknown car ID is-----> Rust_tester_carID_2", Action occured @: 2022-05-26T12:12:47.986252700-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T12:19:35.571170600-04:00
+
+Logging: "Current unknown car ID formatting is-----> 3Rust_tester_carID_3", Action occured @: 2022-05-26T12:19:36.018062500-04:00
+
+Logging: "Current unknown car ID formatting is-----> Rust_tester_carID", Action occured @: 2022-05-26T12:19:36.028302600-04:00
+
+Logging: "Current unknown car ID formatting is-----> Rust_tester_carID_2", Action occured @: 2022-05-26T12:19:36.041905500-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T12:43:27.786824500-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T12:45:30.100480600-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T12:48:11.953897100-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T12:49:47.010250100-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T12:53:09.108197500-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T12:57:24.680219500-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T13:07:07.575620100-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T13:12:26.582349-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T13:19:59.331214800-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T13:35:10.300679100-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T13:38:39.675219400-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T13:39:42.622131400-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T13:42:45.741689400-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T13:55:50.144798800-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T13:57:17.389523-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T14:03:14.315057-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T14:12:10.244717500-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T14:13:55.121602200-04:00
