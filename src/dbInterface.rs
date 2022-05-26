@@ -25,11 +25,12 @@
 #![allow(unused_variables)]
 #![allow(unused_must_use)]
 #![allow(unused_mut)]
+#![allow(dead_code)]
 use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRead}, ptr::null};
 
 use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row, from_value_opt, FromValueError};
 use mysql_common::*;
-use crate::{settings, wsdl_send, dbStructs};
+use crate::{settings, wsdl_send, dbStructs::{self, DuosCarData}};
 
 const DB_REF_FILE: &str = "db_ref.txt";
 
@@ -46,9 +47,9 @@ pub fn run() {
     println!("\nRun func: detail table --> {}\n", car_details_table.clone()); 
     let last_searched = get_last_unknown();
     println!("\nRun func: last ID sent to Umler--> {}\n", last_searched.clone());
-    let (current_schema, counter) = get_table_schema(current_connection).unwrap(); 
-    for i in current_schema.iter() {println!("\nname: {:?}\n", i);} //same iteration as schema, outside the function...
-    println!("\nRun func: Current Schema ---> {:?}\n", current_schema);      //same info as line above, just as blob and not iterated...
+    let current_schema = get_table_schema(current_connection).unwrap(); 
+    //for i in current_schema.iter() {println!("\nname: {:?}\n", i);}                   //Debug, same iteration as get_schema, shown from main running process...
+    //println!("\nRun func: Current Schema ---> {:?}\n", current_schema);                //Debug, same info as line above, just as blob and not iterated...
 
     let current_connection = db_connection().unwrap();
     let current_connection2 = db_connection().unwrap();
@@ -65,16 +66,13 @@ pub fn run() {
 
 
     let wsdl_stmt = wsdl_send::db_statement_formatter(unknown_car_IDs.clone());
-    let wsdl_response = wsdl_send::dummy_wsdl_send(current_connection2, wsdl_stmt, db_url, counter).unwrap();
+    let wsdl_response = wsdl_send::dummy_wsdl_send(current_connection2, wsdl_stmt, db_url).unwrap();
 
-    // for i in wsdl_response {                //WORKING!!
-    //     println!("\n\n\n********This is what is returned from the Dummy WSDL call, displayed from dbInterface module********\n\n\n");
-    //     println!("{}", i);
-    // }
+    for i in wsdl_response {
+        println!("\nIteration of WSDL response vectors: {:?}\n", i);
+    }
+
     //add(current_connection3, wsdl_response.unwrap(), car_details_table);
-
-
-
 
     /*
     The code below is the next step once MySQL schema problem is resolved and understood code below (webservice formatter) is meant to format request to umler...
@@ -180,8 +178,8 @@ pub fn get_unknown_ID_table () -> String {
     sel_tables_as_str
 }
 
-pub fn get_table_schema (current_connection: PooledConn) -> Result<(Vec<String>, i32), Error> {
-    println!("\n\n\n\nThe following lines are the Schema Pulled from our car details table....so we know the needed format for info received back from umler\n\n\n\n");
+pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, Error> {
+    println!("\n\nThe following lines are the Schema Pulled from our car details table....so we know the needed format for info received back from umler\n\n");
     let mut conn = current_connection;
     let car_details_table_pass = get_car_details_table();
     let get_schema_stmt = format!("SHOW COLUMNS IN {}", car_details_table_pass.trim());
@@ -189,11 +187,9 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<(Vec<String>,
     let mut return_vec:Vec<String>= vec![];
     let mut selection = conn.start_transaction(TxOpts::default())?;
     let res:Vec<Row> = selection.query(get_schema_stmt).unwrap();
-    // println!("Row data returned: \n"); //raw example of what is returned from query...
+    // println!("Row data returned: \n");                                        //Debug, raw example of what is returned from query...
     // println!("{:?}", res);
 
-
-    /*Working but very very clunky way of extracting the column name and data types needed without using metadata */
     let mut i = 0;
     for row in res{  //3 options are generated in loop due to the 3 column names we iterate through 
         // let mut i = 0;
@@ -201,23 +197,22 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<(Vec<String>,
         let row1 = row.columns().to_vec();
         let row2 = row.columns_ref();
 
-        println!("\nThis is counter: {}", &i);
+        //println!("\nThis is counter: {}", &i);                                   //Debug, counts current loop iteration
 
         //successfully pulling column names from query and converting from mysql value type below(odd bytes type)
         let conversion = row[0].clone();
         let conversion = match from_value_opt::<String>(conversion){
             Ok(string) => {
-                println!("Column: {}", string);
+                println!("Column: {}", string);                                   //Debug, shows name of column in our database
                 return_vec.push(string);
-                // return Ok(()); //may remove, this was used in an example but may be a weird format thing
             }
-            Err(FromValueError(conversion)) => () /*conversion*/,
+            Err(FromValueError(conversion)) => () /*conversion Error?*/,
         };
 
         let conversion2 = row[1].clone();
         let conversion2 = match from_value_opt::<String>(conversion2){
             Ok(string) => {
-                println!("Data-Type: {}", string);
+                println!("Data-Type: {}\n", string);                        //Debug, shows data type in MySQL for the above Column name
                 return_vec.push(string);
                 // return Ok(());
             }
@@ -226,16 +221,16 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<(Vec<String>,
 
         /*
         Code below shows "subfields" for each item. a database can have tables, tables can have columns, rows, and schema info about the table
-        "subfields" in this context refers to info about, say, a column itself...
+        "subfields" in this context refers to info about, say, a column itself...not for production...
         */
 
         // for columns in row1.iter() {
         //     println!("->{:?}", columns.name_str());
-            
         // }
+
         i = i+1;
     }
-    Ok((return_vec, i))
+    Ok(return_vec)
 }
 
 
