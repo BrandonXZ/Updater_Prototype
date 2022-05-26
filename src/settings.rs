@@ -3,6 +3,7 @@
 * from there it will walk the user through what it needs to function properly. */
 #![allow(unreachable_code)]
 #![allow(unused_must_use)]
+#![allow(dead_code)]
 use std::{path::Path, fs::{File, OpenOptions}, io::{Write, Read, Seek, SeekFrom}};
 const LOGFILE: &str = "umler_updater-log.txt";
 const DB_REF_FILE: &str = "db_ref.txt";
