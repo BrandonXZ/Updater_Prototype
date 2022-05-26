@@ -5,7 +5,7 @@
 * TO DO: 
 * still need to save the returned schema we are using to a vector or array and then convert to a struct (for use later?)
 * define function to search db_ref file for last equipment Id passed to umler and check for new ID's in "unknown car ID" table using that
-* define function that will generate MySQL Insert command for newly obtained data
+*
 * Create Error handling schema both for umler call and for mysql insert.(should be minimal from mysql since we're pulling updated schema each time.)
 * ^^but may require converting between datatypes if something changes on umlers end.
 * 
@@ -68,15 +68,17 @@ pub fn run() {
     let wsdl_stmt = wsdl_send::db_statement_formatter(unknown_car_IDs.clone());
     let wsdl_response = wsdl_send::dummy_wsdl_send(current_connection2, wsdl_stmt, db_url).unwrap();
 
-    for i in wsdl_response {
-        println!("\nIteration of WSDL response vectors: {:?}\n", i);
+    for i in wsdl_response.clone() {
+        println!("\nIteration of WSDL response vectors: {:?}\n", i.clone());
     }
-
-    //add(current_connection3, wsdl_response.unwrap(), car_details_table);
+    let insert_stmt = MySQL_Insert_Formatter(wsdl_response, car_details_table.clone());
+    println!("\nstmt going to mysql: \n{}\n", insert_stmt.clone());
+    add(current_connection3, insert_stmt); //This will need to be moved towards the bottom after the webservice formatter, wsdl_send, wsdl_received 
 
     /*
     The code below is the next step once MySQL schema problem is resolved and understood code below (webservice formatter) is meant to format request to umler...
     */
+
     // if unknown_car_IDs.len() >= 2 {        
     //     for i in unknown_car_IDs.iter() {webservice_formatter(i.clone()); println!("\ni is currently: {}\n", i); } 
     println!("\nEnd of run function...\n");
@@ -84,24 +86,20 @@ pub fn run() {
 
 
 //add the returned car data(response from webservice) to the car info table or log if errors occur
-pub fn add(current_connection: PooledConn, current_ID:Vec<String>, car_details_table: String ) { 
+pub fn add(current_connection: PooledConn, insert_stmt: String) -> Result<(), Error> { 
     let mut conn = current_connection;
-    let default_ID: String = "".to_string();
-    let insert_stmt = format!("INSERT INTO {} VALUES", car_details_table.trim());
-    println!("The Schema statement---> {}\n", insert_stmt);
-    //let selection = conn.exec_drop(insert_stmt, ());
-    if current_ID.len() > 1 {
-
-    } else {
-        let currentID = current_ID[0].clone(); 
-    }
-    println!("add func: add functionality currently being coded...");
-
-    //dbStructs::printStruct();
+    let success = "Successfully added to database".to_string();
+    let e = "Could not write new car data to database".to_string();
+    let success = conn.query_drop(insert_stmt)?; 
+    // match success {                                                      //**need to fix this before production 
+    //     Ok(success) |   
+    //     Err(e)  => settings::logthis_dbRelated(e.to_string(), db_url.clone()),
+    // }
+    //dbStructs::printStruct();                                           //Debug, shows value of Umler Car Struct (that should be) mirroring MySQL schema
     let holder = get_db_url();
     let test_message = "can't add to db because ID was blank".to_string();
     settings::logthis_dbRelated(test_message, holder);
-    //db_reference.seek(SeekFrom::Start(offset.try_into().unwrap())); //may need later to move cursor but probably not with above read line method
+    Ok(())
 }
 
 
@@ -307,4 +305,41 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, 
     last_unknown 
  }
 
+//**Need to fix the last comma at the end of this statement  */
+pub fn MySQL_Insert_Formatter(new_car_data: Vec<Vec<String>>, car_details_table: String) -> String {
+    println!("\n\n*******Database INSERT statement to save newly received Car data*******\n\n");
 
+    let mut holder:Vec<String> = vec![];
+    let mut new_car_data = new_car_data.clone();
+    
+    let insert_stmt = format!("INSERT INTO {} VALUES", car_details_table.trim());
+
+    holder.push(insert_stmt.clone());
+
+    for row in new_car_data.clone() {
+        let mut insert_stmt_vec = vec![];
+        let open = "(".to_string();
+        let close = "),".to_string();
+        let nextline = "\n".to_string();
+        insert_stmt_vec.push(open);
+
+        for items in row {
+            let mut new_insert = String::new();
+            new_insert = format!("\"{}\", ", items.clone());
+            //println!("\"{}\"", items.clone());
+            insert_stmt_vec.push(new_insert);  
+        }
+        // if new_car_data.last() {}
+        insert_stmt_vec.push(close);
+        let joined = insert_stmt_vec.join("");
+        holder.push(joined);
+
+    }
+    
+    
+    let formed = holder.join("\n");
+    let form = str::replace(formed.as_str(), ", )", ")");
+    println!("This is formed:\n {}\n", formed);
+
+    form
+}
