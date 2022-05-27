@@ -3,7 +3,7 @@
 * to the correct car table (see process order below)
 *
 * TO DO: 
-* still need to save the returned schema we are using to a vector or array and then convert to a struct (for use later?)
+* still need to save the returned schema we are using to a vector or array and then convert to a struct...probably not going this route
 * define function to search db_ref file for last equipment Id passed to umler and check for new ID's in "unknown car ID" table using that
 *
 * Create Error handling schema both for umler call and for mysql insert.(should be minimal from mysql since we're pulling updated schema each time.)
@@ -25,7 +25,7 @@
 #![allow(unused_variables)]
 #![allow(unused_must_use)]
 #![allow(unused_mut)]
-#![allow(dead_code)]
+
 use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRead}, ptr::null};
 
 use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row, from_value_opt, FromValueError};
@@ -335,11 +335,14 @@ pub fn MySQL_Insert_Formatter(new_car_data: Vec<Vec<String>>, car_details_table:
         holder.push(joined);
 
     }
-    
-    
+    //removing last comma added for each row of info being inserted and replace with end of statment ';'
     let formed = holder.join("\n");
-    let form = str::replace(formed.as_str(), ", )", ")");
-    println!("This is formed:\n {}\n", formed);
+    let mut form = str::replace(formed.as_str(), ", )", ")");                     
+    //let end_of_line = form.len(); println!("line count is: {}\n", end_of_line);               //Debug, shows statement length in the rare event MySQL limit is reached.
+    form.pop();                                 
+    form.push(';');
+    //println!("\nFinal Form is: \n {}\n", form);                                               //Debug, shows the insert statement created, use for syntax errors. 
 
-    form
+    form    
 }
+
