@@ -286,3 +286,51 @@ Error - This occurred due to internal code exception: "last unknown ID searched 
 Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T18:53:47.209166200-04:00
 
 Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-26T18:54:49.929428300-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T10:32:11.441809200-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T10:33:35.220921300-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T10:36:10.891922900-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T10:38:58.731669900-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T11:01:47.787005600-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-27T11:01:48.125070800-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T11:15:06.603770100-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-27T11:15:06.893492800-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T11:23:59.970476900-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-27T11:24:00.280106700-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T11:45:58.403518100-04:00
+
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-27T11:45:58.698991400-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T11:46:56.846440700-04:00
+
+Error - This occurred due to Database issue: "MySqlError { ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '~,\n(\"3Rust_tester_carID_3\", \"AABX0000200606\", \"GB\", \"G417\", \"AABX\", \"709\", \"545\"' at line 2 }", this occured @: 2022-05-27T11:46:57.173492300-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to Database issue: "can't add to db because ID was blank", this occured @: 2022-05-27T11:46:57.187550600-04:00
+mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T14:19:14.982465800-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T14:31:43.619406-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T14:32:25.034093400-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T14:41:12.811429700-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T15:09:26.249709800-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T15:10:35.615295800-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T15:25:31.034961100-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T15:27:07.921390400-04:00
+
+Error - This occurred due to internal code exception: "last unknown ID searched was not found in db reference file...null, no ID present", this occured @: 2022-05-27T15:53:09.937070200-04:00

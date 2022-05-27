@@ -3,22 +3,23 @@
 * to the correct car table (see process order below)
 *
 * TO DO: 
-* still need to save the returned schema we are using to a vector or array and then convert to a struct...probably not going this route
-* define function to search db_ref file for last equipment Id passed to umler and check for new ID's in "unknown car ID" table using that
-*
-* Create Error handling schema both for umler call and for mysql insert.(should be minimal from mysql since we're pulling updated schema each time.)
-* ^^but may require converting between datatypes if something changes on umlers end.
+* still need to save the returned schema we are using to a vector or array and then convert to a struct...**UPDATE: probably not going this route, currently done OTFly
+* Define function to save last equipment Id passed to umler to db_ref file **need to rework this so we're overwriting the last line and not constant logging**
+* Define function to check for new ID's in "unknown car ID" table using last Id as reference point for last record in table  **Done** need to verify after above func**
+*  
+* 
 * 
 *
 ***********************************************PROCESS ORDER****************************************************************** 
 * Create or obtain existing pooled connection.
 * Query our Car detail table for columns and data-types to ensure we grab the relevant information (must be dynamic in case table schema changes).
-* Query unknown Id tables for the ID's we will be using in the umler webservice request call using last equipment ID used(saved in db_reference file)
+* Get last car ID sent to Umler using what is saved in db_reference file, and only do the rest if there is a new unknown car, If not exists: log, Stop process.
+* If Exists: Query unknown Id tables for the ID's we will be using in the umler webservice request call 
 * Create and send the umler webservice call (occuring in WSDL_SEND.RS) 
 * Obtain and convert response from umler request using relevent schema info pulled from above step(occuring in WSDL_RECEIVE.RS)
 * post newly obtained info to our mysql "car details" table.
 * save last inserted equipment ID to the db reference save-file and overwriting the old.
-* log successful completion timestamp
+* log successful completion timestamp, End process.
 */
 
 #![allow(unused_assignments)]
@@ -48,10 +49,16 @@ pub fn run() {
     let last_searched = get_last_unknown();
     println!("\nRun func: last ID sent to Umler--> {}\n", last_searched.clone());
     let current_schema = get_table_schema(current_connection).unwrap(); 
-    //for i in current_schema.iter() {println!("\nname: {:?}\n", i);}                   //Debug, same iteration as get_schema, shown from main running process...
+    //for i in current_schema.iter() {println!("\nname: {:?}\n", i);}                    //Debug, same iteration as get_schema, shown from main running process...
     //println!("\nRun func: Current Schema ---> {:?}\n", current_schema);                //Debug, same info as line above, just as blob and not iterated...
 
-    let current_connection = db_connection().unwrap();
+    let current_connection = db_connection().unwrap();                       //redundant, I know but its a weird mysql thing
+    let last_row_query = prep_lastItem_query(unknown_car_table.clone());
+    let check_result = checktest(current_connection, last_searched.clone(), last_row_query);
+    println!("\nRun func: Check result is ---> {}\n", check_result.clone());
+    if check_result {
+
+    let current_connection = db_connection().unwrap();  
     let current_connection2 = db_connection().unwrap();
     let current_connection3 = db_connection().unwrap();
 
@@ -59,6 +66,8 @@ pub fn run() {
     println!("\nRun func: stmt --> {}\n", unk_stmt.clone());
     let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
     println!("\nRun func: car ID's ---> {:?}\n", unknown_car_IDs.clone());
+    println!("\nThis should be display the last item from the above car ID's list ---> {:?}\n", unknown_car_IDs.last().unwrap().to_string()); 
+    settings::saveLastSearch(unknown_car_IDs.last().unwrap().to_string());
 
 
     //up to this point everything works fine...shit gets hairy after this...
@@ -75,30 +84,38 @@ pub fn run() {
     println!("\nstmt going to mysql: \n{}\n", insert_stmt.clone());
     add(current_connection3, insert_stmt); //This will need to be moved towards the bottom after the webservice formatter, wsdl_send, wsdl_received 
 
+    } else {
+
+        println!("\nEnd of run function...\n");
+
+    }
+    
+
     /*
     The code below is the next step once MySQL schema problem is resolved and understood code below (webservice formatter) is meant to format request to umler...
     */
 
     // if unknown_car_IDs.len() >= 2 {        
     //     for i in unknown_car_IDs.iter() {webservice_formatter(i.clone()); println!("\ni is currently: {}\n", i); } 
-    println!("\nEnd of run function...\n");
+    println!("\nEnd of run function...\n");                     //remove during production
 }
 
 
 //add the returned car data(response from webservice) to the car info table or log if errors occur
 pub fn add(current_connection: PooledConn, insert_stmt: String) -> Result<(), Error> { 
     let mut conn = current_connection;
+    let holder = get_db_url();
     let success = "Successfully added to database".to_string();
     let e = "Could not write new car data to database".to_string();
-    let success = conn.query_drop(insert_stmt)?; 
-    // match success {                                                      //**need to fix this before production 
-    //     Ok(success) |   
-    //     Err(e)  => settings::logthis_dbRelated(e.to_string(), db_url.clone()),
-    // }
-    //dbStructs::printStruct();                                           //Debug, shows value of Umler Car Struct (that should be) mirroring MySQL schema
-    let holder = get_db_url();
-    let test_message = "can't add to db because ID was blank".to_string();
-    settings::logthis_dbRelated(test_message, holder);
+    let success:Result<(), Error> = conn.query_drop(insert_stmt);                    //query drop works but doesn't return if successful or not..
+    let success = match success {                                                      //**need to fix this before production 
+        Ok(bool) => println!("Successfully added info to database"),  
+        Err(e)  => settings::logthis_dbRelated(e.to_string(), holder.clone()),
+    };
+
+
+                                                        //**Comment Below: inaccurate atm and not in use as it would require storing recreation, this is done on the fly.
+    //dbStructs::printStruct();                         //<----Above refers to this |Debug, shows value of Umler Car Struct (that should be) mirroring MySQL schema**
     Ok(())
 }
 
@@ -144,7 +161,6 @@ pub fn db_connection () -> Result<PooledConn, Error> {
 
 pub fn get_car_details_table () -> String {
     let mut db_reference = OpenOptions::new().read(true).write(true).open(DB_REF_FILE).unwrap();
-    let test_message = "can't add to db because ID was blank".to_string();
     let mut holder = String::new();
     let mut reader = BufReader::new(db_reference);
 
@@ -244,12 +260,17 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, 
     holder
  }
 
-//This preps the MySQL statement for a select transaction
+ pub fn prep_lastItem_query (unknown_Id_table: String) -> String {
+    let get_last_stmt = format!("SELECT Equipment_id FROM {} ORDER BY entryNo DESC LIMIT 1;", unknown_Id_table );
+    get_last_stmt
+ }
+
+//This preps the MySQL statement for a select transaction                                    //needs to be modified to reflect what comes after last item 
  pub fn prep_unknown_Id_query (unknown_Id_table:String) -> String {
-    let get_schema_stmt = format!("SELECT {}.Equipment_id from db_centraco3.{}", unknown_Id_table.trim(), unknown_Id_table.trim());
-    // println!("The Schema statement---> {}\n", get_schema_stmt);
+    let get_rows_stmt = format!("SELECT {}.Equipment_id from db_centraco3.{}", unknown_Id_table.trim(), unknown_Id_table.trim());
+    // println!("The Schema statement---> {}\n", get_schema_stmt);                                 //Debug, shows statement to get unknown car ID's from table
     
-    return get_schema_stmt;
+    return get_rows_stmt;
  }
 
  // COMMENT NEEDED!!!
@@ -337,7 +358,7 @@ pub fn MySQL_Insert_Formatter(new_car_data: Vec<Vec<String>>, car_details_table:
     }
     //removing last comma added for each row of info being inserted and replace with end of statment ';'
     let formed = holder.join("\n");
-    let mut form = str::replace(formed.as_str(), ", )", ")");                     
+    let mut form = str::replace(formed.as_str(), ", )", ")");            //Debug, add ~ to ")" to test logging          
     //let end_of_line = form.len(); println!("line count is: {}\n", end_of_line);               //Debug, shows statement length in the rare event MySQL limit is reached.
     form.pop();                                 
     form.push(';');
@@ -346,3 +367,23 @@ pub fn MySQL_Insert_Formatter(new_car_data: Vec<Vec<String>>, car_details_table:
     form    
 }
 
+pub fn checktest (current_connection: PooledConn, last_searched: String, get_last_stmt: String) -> bool {
+    let option_1 = "null, no ID present".to_string();
+    let mut conn = current_connection;
+    let res:Vec<String> = conn.query(get_last_stmt).unwrap();
+    let this = res.join(" ").trim().to_string();
+    println!("\nThis is the result from last record query: {}\n", this.clone());
+    let modif = last_searched.trim().clone();
+
+    if last_searched.eq(&option_1) {
+        //println!("in the if...");                                //Debug, just to see what is being returned from test
+        return true
+    } else if modif.eq(&this.to_string()){
+        //println!("in the else if...");                           //Debug, just to see what is being returned from test
+        return false 
+    } else {
+        //println!("in the else...");                              //Debug, just to see what is being returned from test
+        return true
+    }
+ 
+}

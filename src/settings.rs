@@ -1,10 +1,12 @@
 /* This module sets the log file, database credentials and Soap version, etc. 
 * before the program is called by the task scheduler, this program should be run atleast once and passed "setup" as the menu option
 * from there it will walk the user through what it needs to function properly. */
+#![allow(unused_variables)]
 #![allow(unreachable_code)]
 #![allow(unused_must_use)]
+#![allow(unused_mut)]
 #![allow(dead_code)]
-use std::{path::Path, fs::{File, OpenOptions}, io::{Write, Read, Seek, SeekFrom}};
+use std::{path::Path, fs::{File, OpenOptions}, io::{Write, Read, Seek, SeekFrom, BufReader, BufRead}};
 const LOGFILE: &str = "umler_updater-log.txt";
 const DB_REF_FILE: &str = "db_ref.txt";
 
@@ -166,4 +168,36 @@ pub fn add_car_details_table (unknown_car_table:String) {
     db_reference.seek(SeekFrom::Start(offset.try_into().unwrap()));
     db_reference.write(table_to_insert.as_bytes());
     println!("successfully saved car details table");
+}
+
+pub fn saveLastSearch (unknown_Car_ID: String ) {
+    let ID_to_insert = format!("\n{} -last ID searched", unknown_Car_ID);
+    let mut holder = String::new();
+    let mut db_reference = OpenOptions::new().read(true).write(true).open(DB_REF_FILE).unwrap();
+    let offset = db_reference.read_to_string(&mut holder).unwrap();
+    db_reference.seek(SeekFrom::Start(offset.try_into().unwrap()));
+    db_reference.write(ID_to_insert.as_bytes());
+    println!("successfully saved last ID to the ref file");
+}
+
+pub fn saveLastSearch_v2 (unknown_Car_ID: String) { //current in progress!!
+    let mut db_reference = OpenOptions::new().read(true).write(true).open(DB_REF_FILE).unwrap();
+    let mut holder = String::new();
+    let mut reader = BufReader::new(db_reference);
+
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    holder.clear();
+    let db_string = reader.read_line(&mut holder);
+    println!("saveLast v2  is currently: {}", holder.clone());
+    let sel_tables_as_str = str::replace(&holder, "-last ID searched", "");
+    let return_val = sel_tables_as_str.to_owned();
+    println!("\nreturn_val is: {}", return_val);
+    // return_val.to_string();
+
 }
