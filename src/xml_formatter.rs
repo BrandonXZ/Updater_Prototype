@@ -7,6 +7,9 @@ by an iterator of the vec.
 #![allow(unused_assignments)]
 #![allow(unused_mut)]
 
+use core::time;
+use std::thread;
+
 use chrono::Utc;
 use crate::settings;
 
@@ -14,10 +17,15 @@ use crate::settings;
 pub fn run (schema:Vec<String>, unknown_IDs:Vec<String>) -> String {
     let schema = schema.clone();
     let xml_column_vec = elements_vec(schema);
+    thread::sleep(time::Duration::from_secs(2));
     let (car_initials, car_numbers) = equipment_initials_check(unknown_IDs);
+    thread::sleep(time::Duration::from_secs(2));
     let car_numbers = len_check(car_numbers);
+    thread::sleep(time::Duration::from_secs(2));
     let car_initials = initial_len_check(car_initials);
+    thread::sleep(time::Duration::from_secs(2));
     xml_stmt_caller(car_initials, car_numbers, xml_column_vec);
+    thread::sleep(time::Duration::from_secs(2));
     "\nComplete WSDL run\n".to_string()
 }
 
@@ -87,6 +95,7 @@ pub fn len_check (current_IDs: Vec<String>) -> Vec<String> {
     } else {
         for current in current_IDs {
             let lognote = format!("Current unknown equipment number formatting is-----> {}", current);
+            thread::sleep(time::Duration::from_secs(1));
             println!("{}", lognote);
             settings::logthis_nonError(lognote);
            if current.len() != 10 {
@@ -110,9 +119,11 @@ pub fn len_check (current_IDs: Vec<String>) -> Vec<String> {
 pub fn initial_len_check(initials: Vec<String>) -> Vec<String> {
     let cloner = initials.clone();
     for item in initials{
+        
         if item.len() < 2 {
             println!("letter quantity doesn't meet spec, atleast 2 needed for each initial\n");
         }
+        thread::sleep(time::Duration::from_secs(1));
     }
     cloner
 }
@@ -124,6 +135,7 @@ pub fn xml_stmt_caller (initials: Vec<String>, numbers: Vec<String>, columns:Vec
     let mut numbers = numbers.clone();
     let columns = columns.clone();
     for (it, it2) in initials.iter().zip(numbers.iter_mut()) {
+        thread::sleep(time::Duration::from_secs(5));
         xml_stmt_maker(it.to_string(), it2.to_string(), columns.clone())
     }
 }

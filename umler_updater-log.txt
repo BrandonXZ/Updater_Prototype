@@ -38,3 +38,23 @@ Logging: "Current unknown equipment number formatting is-----> 0000200605", Acti
 Logging: "Current unknown equipment number formatting is-----> 0000050531", Action occured @: 2022-06-02T15:47:10.741162-04:00
 
 Logging: "Current unknown equipment number formatting is-----> 0000002370", Action occured @: 2022-06-02T15:47:10.748764900-04:00
+
+Logging: "Current unknown car ID is-----> CN  0000136408", Action occured @: 2022-06-02T16:32:09.253338500-04:00
+
+Logging: "Current unknown car ID is-----> AABX0000200605", Action occured @: 2022-06-02T16:32:09.267540400-04:00
+
+Logging: "Current unknown car ID is-----> ABOX0000050531", Action occured @: 2022-06-02T16:32:09.276321400-04:00
+
+Logging: "Current unknown car ID is-----> AA  0000002370", Action occured @: 2022-06-02T16:32:09.287056600-04:00
+
+Logging: "Current unknown car ID is-----> AABX0000200611", Action occured @: 2022-06-02T16:32:09.295010400-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000136408", Action occured @: 2022-06-02T16:32:37.526678500-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000200605", Action occured @: 2022-06-02T16:32:38.536963500-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000050531", Action occured @: 2022-06-02T16:32:39.551662900-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000002370", Action occured @: 2022-06-02T16:32:40.562728400-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000200611", Action occured @: 2022-06-02T16:32:41.586332900-04:00

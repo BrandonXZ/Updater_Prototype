@@ -3,11 +3,7 @@
 * to the correct car table (see process order below)
 *
 * TO DO: 
-* still need to save the returned schema we are using to a vector or array and then convert to a struct...**UPDATE: probably not going this route, currently done OTFly
-* Define function to save last equipment Id passed to umler to db_ref file **need to rework this so we're overwriting the last line and not constant logging**
-* Define function to check for new ID's in "unknown car ID" table using last Id as reference point for last record in table  **Done** need to verify after above func**
-*  
-* 
+* Possibly rewrite function to check for last Id searched using MySQL flags instead of an auto-incremented column
 * 
 *
 ***********************************************PROCESS ORDER****************************************************************** 
@@ -27,7 +23,8 @@
 #![allow(unused_must_use)]
 #![allow(unused_mut)]
 
-use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRead}, ptr::null};
+use core::time;
+use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRead}, ptr::null, thread};
 
 use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row, from_value_opt, FromValueError};
 use mysql_common::*;
@@ -40,22 +37,29 @@ pub fn run() {
     let db_url = get_db_url();
     let mut current_ID = "".to_string();
     println!("\nStarting sequence...\n");
+    thread::sleep(time::Duration::from_secs(1));
     let mut current_connection = db_connection().unwrap();
     println!("\nConnection established...\n");
+    thread::sleep(time::Duration::from_secs(1));
     let unknown_car_table = get_unknown_ID_table();
     println!("\nRun func: unknown table --> {}\n", unknown_car_table.clone());
+    thread::sleep(time::Duration::from_secs(1));
     let car_details_table = get_car_details_table();
     println!("\nRun func: detail table --> {}\n", car_details_table.clone()); 
+    thread::sleep(time::Duration::from_secs(1));
     let last_searched = get_last_unknown();
     println!("\nRun func: last ID sent to Umler--> {}\n", last_searched.clone());
+    thread::sleep(time::Duration::from_secs(1));
     let (current_schema, columns_only) = get_table_schema(current_connection).unwrap(); 
     //for i in current_schema.iter() {println!("\nname: {:?}\n", i);}                    //Debug, same iteration as get_schema, shown from main running process...
     println!("\nRun func: Current Schema ---> {:?}\n", current_schema.clone());                //Debug, same info as line above, just as blob and not iterated...
+    thread::sleep(time::Duration::from_secs(1));
 
     let current_connection = db_connection().unwrap();                       //redundant, I know but its a weird mysql thing
     let last_row_query = prep_lastItem_query(unknown_car_table.clone());
     let check_result = checktest(current_connection, last_searched.clone(), last_row_query);
     println!("\nRun func: Check result is ---> {}\n", check_result.clone());
+    thread::sleep(time::Duration::from_secs(1));
     if check_result {
 
     let current_connection = db_connection().unwrap();  
@@ -64,9 +68,11 @@ pub fn run() {
 
     let unk_stmt = prep_unknown_Id_query(unknown_car_table.trim().to_string());
     println!("\nRun func: stmt --> {}\n", unk_stmt.clone());
+    thread::sleep(time::Duration::from_secs(2));
     let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
     println!("\nRun func: car ID's ---> {:?}\n", unknown_car_IDs.clone());
     println!("\nThis should be display the last item from the above car ID's list ---> {:?}\n", unknown_car_IDs.last().unwrap().to_string()); 
+    thread::sleep(time::Duration::from_secs(2));
     let wsdl_search_IDs = webservice_formatter(unknown_car_IDs.clone(), current_schema.clone());
     settings::saveLastSearch(unknown_car_IDs.last().unwrap().to_string());
     
@@ -80,11 +86,13 @@ pub fn run() {
 
     for i in wsdl_response.clone() {
         println!("\nIteration of WSDL response vectors: {:?}\n", i.clone());
+        thread::sleep(time::Duration::from_secs(1));
     }
     let insert_stmt = MySQL_Insert_Formatter(wsdl_response, car_details_table.clone());
     println!("\nstmt going to mysql: \n{}\n", insert_stmt.clone());
     add(current_connection3, insert_stmt); //This will need to be moved towards the bottom after the webservice formatter, wsdl_send, wsdl_received 
     println!("\n\n\nThe code below shows what the actual wsdl soap request going to umler will look like\n\n\n");
+    thread::sleep(time::Duration::from_secs(2));
     xml_formatter::run(columns_only.clone(), unknown_car_IDs);
     } else {
         println!("\nEnd of run function...\n");

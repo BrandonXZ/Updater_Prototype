@@ -7,7 +7,8 @@
 #![allow(unused_variables)]
 
 
-use std::env::var;
+use core::time;
+use std::{env::var, thread};
 use mysql::{PooledConn, TxOpts, prelude::Queryable, Error, from_value_opt, FromValueError, Row, from_row, Value};
 use mysql_common::*;
 //need to create a build.rs for this to work...A struct will need to be created for AEI tags in dbStructs.rs for this to work.
@@ -40,7 +41,7 @@ pub fn dummy_wsdl_send(db_connection:PooledConn, queryStmt: String, db_string:St
                 };
                                
             }
-
+            thread::sleep(time::Duration::from_secs(2));
             vec_of_vecs.push(column_vec.clone());
             //println!("\nVec of Vec is: {:?}\n", vec_of_vecs.clone());         //Debug, ensures Vec is constructed properly for each iteration
             //println!("Row length is: {}", row_length);                        //Debug, shows all columns in row are captured.
@@ -63,11 +64,12 @@ pub fn dummy_wsdl_send(db_connection:PooledConn, queryStmt: String, db_string:St
 
 pub fn db_statement_formatter(current_IDs:Vec<String>) -> String {
     println!("\n\n*******Database SEARCH statement acting as dummy Umler Webservice call*******\n\n");
+    thread::sleep(time::Duration::from_secs(2));
 
     let unknown_IDs = current_IDs.clone();
     let mut search_stmt_vec = vec![];
     let search_stmt = format!("SELECT * FROM dummy_umler_webservice WHERE ");
-    
+    thread::sleep(time::Duration::from_secs(2));
     search_stmt_vec.push(search_stmt);
     
         if current_IDs.len() >=2 {
@@ -88,7 +90,7 @@ pub fn db_statement_formatter(current_IDs:Vec<String>) -> String {
     //println!("Search Statement Vec is: {:?}", search_stmt_vec);      //commented since this is  working, left for debug purposes only
     let joined = search_stmt_vec.join("\n");
     println!("\nComplete Search statement : {}\n\n\n", joined);
- 
+    thread::sleep(time::Duration::from_secs(2));
     joined
 }
 
