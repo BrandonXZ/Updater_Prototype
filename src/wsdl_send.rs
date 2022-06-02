@@ -11,7 +11,6 @@ use std::env::var;
 use mysql::{PooledConn, TxOpts, prelude::Queryable, Error, from_value_opt, FromValueError, Row, from_row, Value};
 use mysql_common::*;
 //need to create a build.rs for this to work...A struct will need to be created for AEI tags in dbStructs.rs for this to work.
-use savon;
 use crate::settings;
 
 
@@ -72,16 +71,16 @@ pub fn db_statement_formatter(current_IDs:Vec<String>) -> String {
     search_stmt_vec.push(search_stmt);
     
         if current_IDs.len() >=2 {
-            let additional_ID = format!("(dum_search_key = \"{}\")", current_IDs[0]);
+            let additional_ID = format!("(Equipment_id = \"{}\")", current_IDs[0]);
             search_stmt_vec.push(additional_ID);
             
             for i in unknown_IDs.clone() {
                 if i.eq(&unknown_IDs[0]) {continue;}
-                let additional_ID2 = format!("OR (dum_search_key = \"{}\")", i);
+                let additional_ID2 = format!("OR (Equipment_id = \"{}\")", i);
                 search_stmt_vec.push(additional_ID2);
             }
         } else {
-            let additional_ID = format!("(dum_search_key = \"{}\")", current_IDs[0]);
+            let additional_ID = format!("(Equipment_id = \"{}\")", current_IDs[0]);
             search_stmt_vec.push(additional_ID);
         }
 

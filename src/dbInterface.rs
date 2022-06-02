@@ -31,7 +31,7 @@ use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRea
 
 use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row, from_value_opt, FromValueError};
 use mysql_common::*;
-use crate::{settings, wsdl_send, dbStructs::{self, DuosCarData}};
+use crate::{settings, wsdl_send, dbStructs::{self, DuosCarData}, xml_formatter};
 
 const DB_REF_FILE: &str = "db_ref.txt";
 
@@ -48,9 +48,9 @@ pub fn run() {
     println!("\nRun func: detail table --> {}\n", car_details_table.clone()); 
     let last_searched = get_last_unknown();
     println!("\nRun func: last ID sent to Umler--> {}\n", last_searched.clone());
-    let current_schema = get_table_schema(current_connection).unwrap(); 
+    let (current_schema, columns_only) = get_table_schema(current_connection).unwrap(); 
     //for i in current_schema.iter() {println!("\nname: {:?}\n", i);}                    //Debug, same iteration as get_schema, shown from main running process...
-    //println!("\nRun func: Current Schema ---> {:?}\n", current_schema);                //Debug, same info as line above, just as blob and not iterated...
+    println!("\nRun func: Current Schema ---> {:?}\n", current_schema.clone());                //Debug, same info as line above, just as blob and not iterated...
 
     let current_connection = db_connection().unwrap();                       //redundant, I know but its a weird mysql thing
     let last_row_query = prep_lastItem_query(unknown_car_table.clone());
@@ -67,13 +67,14 @@ pub fn run() {
     let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
     println!("\nRun func: car ID's ---> {:?}\n", unknown_car_IDs.clone());
     println!("\nThis should be display the last item from the above car ID's list ---> {:?}\n", unknown_car_IDs.last().unwrap().to_string()); 
+    let wsdl_search_IDs = webservice_formatter(unknown_car_IDs.clone(), current_schema.clone());
     settings::saveLastSearch(unknown_car_IDs.last().unwrap().to_string());
-
-
-    //up to this point everything works fine...shit gets hairy after this...
     
 
+    //checkpoint
+    
 
+        //below wsdl calls are demo dummy functions 
     let wsdl_stmt = wsdl_send::db_statement_formatter(unknown_car_IDs.clone());
     let wsdl_response = wsdl_send::dummy_wsdl_send(current_connection2, wsdl_stmt, db_url).unwrap();
 
@@ -83,20 +84,13 @@ pub fn run() {
     let insert_stmt = MySQL_Insert_Formatter(wsdl_response, car_details_table.clone());
     println!("\nstmt going to mysql: \n{}\n", insert_stmt.clone());
     add(current_connection3, insert_stmt); //This will need to be moved towards the bottom after the webservice formatter, wsdl_send, wsdl_received 
-
+    println!("\n\n\nThe code below shows what the actual wsdl soap request going to umler will look like\n\n\n");
+    xml_formatter::run(columns_only.clone(), unknown_car_IDs);
     } else {
-
         println!("\nEnd of run function...\n");
 
     }
     
-
-    /*
-    The code below is the next step once MySQL schema problem is resolved and understood code below (webservice formatter) is meant to format request to umler...
-    */
-
-    // if unknown_car_IDs.len() >= 2 {        
-    //     for i in unknown_car_IDs.iter() {webservice_formatter(i.clone()); println!("\ni is currently: {}\n", i); } 
     println!("\nEnd of run function...\n");                     //remove during production
 }
 
@@ -121,24 +115,31 @@ pub fn add(current_connection: PooledConn, insert_stmt: String) -> Result<(), Er
 
 
 /* May be added to wsdl_send module for cleaner code an better org. 
-* performs formatting to equipment Id required for webservice. This needs to be padded to be exactly 10 alphanumeric items long, 
-* either by adding 0's to beginning of the letter portion of the "String"(Mfr) or the numeric portion(ID)
-* This is temporarily set up for testing but will need to read value of sql query response when sql process is finished. (currently coding)*/
+* performs formatting to equipment Id required for webservice. This needs to be padded to be exactly 12-14 characters long, 
+* by adding 0's to beginning of the numeric portion(ID) (currently coding)*/
 
-pub fn webservice_formatter(current_ID:String) {
+pub fn webservice_formatter(current_IDs:Vec<String>, schema: Vec<String>) -> String {
     let webservice_comm_type = "send function".to_string();
     println!("Web Service Formatter functionality not added yet...");
+    //let column_vec_xml = vec![];
 
-    if current_ID.is_empty() {
+    if current_IDs.is_empty() {
         let Errornote = "No ID received for formatting".to_string();
         settings::logthis_webService(Errornote, webservice_comm_type.clone());
 
     } else {
-        let lognote = format!("Current unknown car ID formatting is-----> {}", current_ID);
-        println!("{}", lognote);
-        settings::logthis_nonError(lognote);
+        for current in current_IDs {
+            let lognote = format!("Current unknown car ID is-----> {}", current);
+            println!("{}", lognote);
+            settings::logthis_nonError(lognote);
+
+
+
+
+        }
     }
 
+    "Placeholder String".to_string()
 }
 
 
@@ -192,13 +193,14 @@ pub fn get_unknown_ID_table () -> String {
     sel_tables_as_str
 }
 
-pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, Error> {
+pub fn get_table_schema (current_connection: PooledConn) -> Result<(Vec<String>, Vec<String>), Error> {
     println!("\n\nThe following lines are the Schema Pulled from our car details table....so we know the needed format for info received back from umler\n\n");
     let mut conn = current_connection;
     let car_details_table_pass = get_car_details_table();
     let get_schema_stmt = format!("SHOW COLUMNS IN {}", car_details_table_pass.trim());
     //println!("The Schema statement---> {}\n", get_schema_stmt);
     let mut return_vec:Vec<String>= vec![];
+    let mut return_vec2:Vec<String>= vec![];
     let mut selection = conn.start_transaction(TxOpts::default())?;
     let res:Vec<Row> = selection.query(get_schema_stmt).unwrap();
     // println!("Row data returned: \n");                                        //Debug, raw example of what is returned from query...
@@ -217,8 +219,9 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, 
         let conversion = row[0].clone();
         let conversion = match from_value_opt::<String>(conversion){
             Ok(string) => {
-                println!("Column: {}", string);                                   //Debug, shows name of column in our database
-                return_vec.push(string);
+                println!("Column: {}", string); 
+                return_vec.push(string.clone());                                  //Debug, shows name of column in our database
+                return_vec2.push(string);
             }
             Err(FromValueError(conversion)) => () /*conversion Error?*/,
         };
@@ -244,7 +247,7 @@ pub fn get_table_schema (current_connection: PooledConn) -> Result<Vec<String>, 
 
         i = i+1;
     }
-    Ok(return_vec)
+    Ok((return_vec, return_vec2))
 }
 
 

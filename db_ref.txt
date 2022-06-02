@@ -1,5 +1,5 @@
-db_ref.txt was created on 2022-05-25T13:54:30.751202200-04:00 
-mysql://Brandon_dev_Centraco:admin@127.0.0.1:3306/db_centraco3
+db_ref.txt was created on 2022-06-02T09:56:34.882185700-04:00 
+mysql://admin:admin@localhost:3306/db_centraco3
 tbl_unknown_ids -Unknown Car ID Table
 dummy_blank_detail_table -Car Detail Storage Table
-3Rust_tester_carID_3 -last ID searched
+AA  0000002370 -last ID searched

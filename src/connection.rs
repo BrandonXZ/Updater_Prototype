@@ -23,7 +23,7 @@ pub fn run(path: String, dbn: &str) -> Result<()> {
 
     //get tables available within the database
     let table_stmt = format!("SHOW TABLES IN {}", dbn);
-    println!("{}", table_stmt);
+    println!("\n{}  -MySQL Statement", table_stmt);
     let mut selection = conn.start_transaction(TxOpts::default())?; // may not need this
     
     let tables_avail = get_avail_tables(selection, table_stmt);
@@ -37,7 +37,11 @@ fn get_avail_tables(mut selection: Transaction, table_stmt: String) -> Vec<Strin
     let res:Result<Vec<String>> = selection.query(table_stmt);
     for row in res.iter(){
         let mut rowz = row.as_slice();     
-        println!("Get_avail_tables func: Tables available are: {:?}, rows in database: {:?}", row, rowz);
+        //println!("Get_avail_tables func: Tables available are: {:?}\n", row);            //Debug, Shows available tables before iterator...
+        println!("getting available tables\n");
+        for items in row.iter() {
+            println!("-------> {}", items);
+        }
     }
     res.unwrap()
 }

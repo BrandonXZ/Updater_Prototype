@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="UmlerEquipmentQueryService" targetNamespace="http://equipment.query.services.umler.railinc.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:eq="http://schemas.railinc.com/eq/umler/equipment/dynamic" xmlns:hdr="http://schemas.railinc.com/eq/umler/service/header" xmlns:qs="http://equipment.query.services.umler.railinc.com" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:srvc="http://schemas.railinc.com/eq/umler/service/dynamic/equipmentservice" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://schemas.railinc.com/eq/umler/service/header" xmlns="http://schemas.railinc.com/eq/umler/service/header">
+      <!--START: Document Header Information Types-->
+      <xsd:simpleType name="OrganizationNameType">
+        <xsd:restriction base="xsd:string">
+          <xsd:minLength value="1"/>
+          <xsd:maxLength value="80"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="OrganizationIdentifierType">
+        <xsd:restriction base="xsd:string">
+          <xsd:minLength value="1"/>
+          <xsd:maxLength value="128"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="EmailAddressType">
+        <xsd:restriction base="xsd:string">
+          <xsd:minLength value="1"/>
+          <xsd:maxLength value="256"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="TelephoneNumberType">
+        <xsd:restriction base="xsd:string">
+          <xsd:minLength value="1"/>
+          <xsd:maxLength value="20"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="InstanceIdentifierType">
+        <xsd:restriction base="xsd:string">
+          <xsd:minLength value="1"/>
+          <xsd:maxLength value="128"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="CreateDateAndTimeType">
+        <xsd:restriction base="xsd:dateTime"/>
+      </xsd:simpleType>
+      <xsd:complexType name="IndividualLocationType">
+        <xsd:sequence>
+          <xsd:element name="ElectronicLocation" type="ElectronicLocationType"/>
+          <xsd:element name="Telephone" type="TelephoneType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="OrganizationContactType">
+        <xsd:sequence>
+          <xsd:element name="OrganizationIdentification" type="OrganizationIdentificationType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ElectronicLocationType">
+        <xsd:sequence>
+          <xsd:element name="EmailAddress" type="EmailAddressType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="IndividualContactType">
+        <xsd:sequence>
+          <xsd:element name="IndividualLocation" type="IndividualLocationType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TelephoneType">
+        <xsd:sequence>
+          <xsd:element name="TelephoneNumber" type="TelephoneNumberType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="OrganizationIdentificationType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="OrganizationName" type="OrganizationNameType"/>
+          <xsd:element name="OrganizationIdentifier" type="OrganizationIdentifierType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="SenderReceiverType">
+        <xsd:sequence>
+          <xsd:element name="OrganizationContact" type="OrganizationContactType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="IndividualContact" type="IndividualContactType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="DocumentDetailType">
+        <xsd:sequence>
+          <xsd:element name="CreateDateAndTime" type="CreateDateAndTimeType"/>
+          <xsd:element name="InstanceIdentifier" type="InstanceIdentifierType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="DocumentHeaderType">
+        <xsd:sequence>
+          <xsd:element name="Sender" type="SenderReceiverType"/>
+          <xsd:element name="Receiver" type="SenderReceiverType"/>
+          <xsd:element name="DocumentDetail" type="DocumentDetailType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--END: Document Header Information-->
+      <!--START: Service Context Types-->
+      <xsd:simpleType name="SCACType">
+        <xsd:restriction base="xsd:token">
+          <xsd:minLength value="2"/>
+          <xsd:maxLength value="4"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="CustomerType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="SCAC" type="SCACType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="CustomerIdentityType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="Customer" type="CustomerType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="SubmitModeTypeCode">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="SUBMIT"/>
+          <xsd:enumeration value="VALIDATE"/>
+          <xsd:enumeration value="SUBMIT IF VALID"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="SubmitModeType">
+        <xsd:sequence>
+          <xsd:element name="SubmitModeType" type="SubmitModeTypeCode"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="TraceIDType">
+        <xsd:restriction base="xsd:string"/>
+      </xsd:simpleType>
+      <xsd:simpleType name="EnvironmentType">
+        <xsd:restriction base="xsd:string"/>
+      </xsd:simpleType>
+      <xsd:complexType name="ClientContextType">
+        <xsd:sequence>
+          <xsd:element name="TraceID" type="TraceIDType"/>
+          <xsd:element name="EnvironmentType" type="EnvironmentType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ServiceContextType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="CustomerIdentity" type="CustomerIdentityType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="SubmitMode" type="SubmitModeType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="ClientContext" type="ClientContextType"/>
+          <xsd:element name="ReferenceFileContext" type="ReferenceFileContextType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ReferenceFileContextType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ReferenceFileVersion" type="ReferenceFileVersionType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="ReferenceFileVersionType">
+        <xsd:restriction base="xsd:string"/>
+      </xsd:simpleType>
+      <xsd:complexType name="QueryServiceContextType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="CustomerIdentity" type="CustomerIdentityType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="ClientContext" type="ClientContextType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--END: Service Context Types-->
+    </xsd:schema>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://schemas.railinc.com/eq/umler/service/dynamic/equipmentservice">
+      <xsd:import namespace="http://schemas.railinc.com/eq/umler/equipment/dynamic"/>
+      <xsd:import namespace="http://schemas.railinc.com/eq/umler/service/header"/>
+      <!--BEGIN: Equipment Transaction Service Wrappers-->
+      <xsd:element name="EquipmentQueryFullViewRequest" type="srvc:EquipmentQueryFullViewRequestType"/>
+      <xsd:element name="EquipmentQueryFullViewResponse" type="srvc:EquipmentQueryFullViewResponseType"/>
+      <xsd:element name="EquipmentSelectElementsQueryRequest" type="srvc:EquipmentSelectElementsQueryRequestType"/>
+      <xsd:element name="EquipmentSelectElementsQueryResponse" type="srvc:EquipmentSelectElementsQueryResponseType"/>
+      <xsd:complexType name="UmlerEquipmentAddRequestType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:ServiceContextType"/>
+          <xsd:element maxOccurs="50" minOccurs="1" name="EquipmentUnit" type="eq:AddEquipmentUnitType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="UmlerEquipmentAddResponseType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:ServiceContextType"/>
+          <xsd:element name="ResponseSummary" type="eq:ResponseSummaryType"/>
+          <xsd:element maxOccurs="50" minOccurs="1" name="EquipmentUnit" type="eq:AddEquipmentUnitType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="UmlerEquipmentChangeRequestType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:ServiceContextType"/>
+          <xsd:element maxOccurs="50" minOccurs="1" name="EquipmentUnit" type="eq:ChangeEquipmentUnitType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="UmlerEquipmentChangeResponseType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:ServiceContextType"/>
+          <xsd:element name="ResponseSummary" type="eq:ResponseSummaryType"/>
+          <xsd:element maxOccurs="50" minOccurs="1" name="EquipmentUnit" type="eq:ChangeEquipmentUnitType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="UmlerEquipmentDeleteRequestType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:ServiceContextType"/>
+          <xsd:element maxOccurs="50" minOccurs="1" name="EquipmentUnit" type="eq:DeleteEquipmentUnitType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="UmlerEquipmentDeleteResponseType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:ServiceContextType"/>
+          <xsd:element name="ResponseSummary" type="eq:ResponseSummaryType"/>
+          <xsd:element maxOccurs="50" minOccurs="1" name="EquipmentUnit" type="eq:DeleteEquipmentUnitType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--END: Equipment Transaction Service Wrappers-->
+      <!--BEGIN:Equipment Query Service Wrappers-->
+      <xsd:complexType name="EquipmentQueryFullViewRequestType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:QueryServiceContextType"/>
+          <xsd:element name="EquipmentQueryRequestDetail" type="eq:EquipmentQueryFullViewRequestDetailType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentQueryFullViewResponseType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:QueryServiceContextType"/>
+          <xsd:element name="EquipmentQueryResponseDetail" type="eq:EquipmentQueryResponseDetailType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentSelectElementsQueryRequestType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:QueryServiceContextType"/>
+          <xsd:element name="EquipmentQueryRequestDetail" type="eq:EquipmentQueryRequestDetailType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentSelectElementsQueryResponseType">
+        <xsd:sequence>
+          <xsd:element name="DocumentHeader" type="hdr:DocumentHeaderType"/>
+          <xsd:element name="ServiceContext" type="hdr:QueryServiceContextType"/>
+          <xsd:element name="EquipmentQueryResponseDetail" type="eq:EquipmentQueryResponseDetailType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--END: Equipment Query Service Wrappers-->
+    </xsd:schema>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://schemas.railinc.com/eq/umler/equipment/dynamic" xmlns="http://schemas.railinc.com/eq/umler/equipment/dynamic">
+      <!--START: Equipment Information-->
+      <xsd:simpleType name="EquipmentInitialType">
+        <xsd:restriction base="xsd:token">
+          <xsd:pattern value="[A-Za-z]{2,4}"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="EquipmentNumberType">
+        <xsd:restriction base="xsd:token">
+          <xsd:pattern value="[0-9]{10}"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="EquipmentGroupType">
+        <xsd:restriction base="xsd:token">
+          <xsd:pattern value="[A-Za-z]{4}"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="EquipmentUnitIdentifierType">
+        <xsd:sequence>
+          <xsd:element name="EquipmentInitial" type="EquipmentInitialType"/>
+          <xsd:element name="EquipmentNumber" type="EquipmentNumberType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TransactionResponseType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="ResponseCode" type="MessageCodeType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--END: Equipment Information-->
+      <!--START: Response Codes and Status Information-->
+      <xsd:simpleType name="LastUpdateTimestampType">
+        <xsd:restriction base="xsd:dateTime"/>
+      </xsd:simpleType>
+      <xsd:complexType name="MessageCodeType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="code" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="text" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="severityLevel" type="MessageSeverityLevelType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--END: Response Codes and Status Information-->
+      <!--START: Element And Component Information-->
+      <xsd:simpleType name="ElementIDType">
+        <xsd:restriction base="xsd:string">
+          <xsd:pattern value=""/>
+          <xsd:length value="4"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="ElementLabelType">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="255"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="ElementValueType">
+        <xsd:annotation>
+          <xsd:documentation>Size limitation is to prevent DOS attacks.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="1000"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="UnitOfMeasureType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="lbs"/>
+          <xsd:enumeration value="in"/>
+          <xsd:enumeration value="usd"/>
+          <xsd:enumeration value="mph"/>
+          <xsd:enumeration value="cuft"/>
+          <xsd:enumeration value="vlt"/>
+          <xsd:enumeration value="deg"/>
+          <xsd:enumeration value="usgl"/>
+          <xsd:enumeration value="lb"/>
+          <xsd:enumeration value="tons"/>
+          <xsd:enumeration value="amps"/>
+          <xsd:enumeration value="g"/>
+          <xsd:enumeration value="pct"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="MessageSeverityLevelType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="OK"/>
+          <xsd:enumeration value="ERROR"/>
+          <xsd:enumeration value="WARNING"/>
+          <xsd:enumeration value="INFO"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="BaseResponseType">
+        <xsd:sequence minOccurs="0">
+          <xsd:element minOccurs="0" name="lastUpdateTimestamp" type="LastUpdateTimestampType"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="responseCodes" type="MessageCodeType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="isInConflict" type="xsd:boolean"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="isSystemGenerated" type="xsd:boolean"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="isDataEmpty" type="xsd:boolean"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="isConfidential" type="xsd:boolean"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentElementType">
+        <xsd:complexContent>
+          <xsd:extension base="BaseResponseType">
+            <xsd:sequence>
+              <xsd:element maxOccurs="1" minOccurs="1" name="elementID" type="ElementIDType"/>
+              <xsd:element maxOccurs="1" minOccurs="0" name="elementLabel" type="xsd:string"/>
+              <xsd:element maxOccurs="1" minOccurs="0" name="elementValue" type="ElementValueType"/>
+              <xsd:element maxOccurs="1" minOccurs="0" name="unitOfMeasure" type="UnitOfMeasureType"/>
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:simpleType name="ComponentIDType">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="ComponentLocationType">
+        <xsd:restriction base="xsd:string"/>
+      </xsd:simpleType>
+      <xsd:complexType name="ComponentElementType">
+        <xsd:complexContent>
+          <xsd:extension base="EquipmentElementType">
+            <xsd:sequence>
+              <xsd:element maxOccurs="1" minOccurs="0" name="componentID" type="ComponentIDType"/>
+              <xsd:element maxOccurs="1" minOccurs="0" name="componentLocation" type="ComponentLocationType"/>
+              <xsd:element maxOccurs="1" minOccurs="0" name="parentComponentID" type="ComponentIDType"/>
+              <xsd:element maxOccurs="1" minOccurs="0" name="parentComponentLocation" type="ComponentLocationType"/>
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="ComponentType">
+        <xsd:complexContent>
+          <xsd:extension base="BaseResponseType">
+            <xsd:sequence>
+              <xsd:element name="componentID" type="ComponentIDType"/>
+              <xsd:element maxOccurs="1" minOccurs="1" name="componentLocation" type="ComponentLocationType"/>
+              <xsd:element maxOccurs="1" minOccurs="0" name="parentComponentID" type="ComponentIDType"/>
+              <xsd:element maxOccurs="1" minOccurs="0" name="parentComponentLocation" type="ComponentLocationType"/>
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <!--END: Element And Component Information-->
+      <!--START: Inspection Information-->
+      <xsd:simpleType name="InspectionType">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="GenericInspectionType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="TransactionResponse" type="TransactionResponseType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="InspectionType" type="InspectionType"/>
+          <xsd:element maxOccurs="50" minOccurs="1" name="InspectionElement" type="EquipmentElementType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--END: Inspection Information-->
+      <!--BEGIN: Service Specific Types-->
+      <xsd:complexType name="EquipmentUnitCharacteristicsAddType">
+        <xsd:choice maxOccurs="unbounded" minOccurs="0">
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="addComponent" type="ComponentType"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="componentElement" type="ComponentElementType"/>
+        </xsd:choice>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentUnitCharacteristicsChangeType">
+        <xsd:choice maxOccurs="unbounded" minOccurs="0">
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="addComponent" type="ComponentType"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="componentElement" type="ComponentElementType"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="deleteComponent" type="ComponentType"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="deleteComponentElement" type="ComponentElementType"/>
+        </xsd:choice>
+      </xsd:complexType>
+      <xsd:complexType name="AddEquipmentUnitType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="TransactionResponse" type="TransactionResponseType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentUnitIdentifier" type="EquipmentUnitIdentifierType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentGroup" type="EquipmentGroupType"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="EquipmentInspection" type="GenericInspectionType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentUnitCharacteristics" type="EquipmentUnitCharacteristicsAddType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ChangeEquipmentUnitType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="TransactionResponse" type="TransactionResponseType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentUnitIdentifier" type="EquipmentUnitIdentifierType"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="EquipmentInspection" type="GenericInspectionType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentUnitCharacteristics" type="EquipmentUnitCharacteristicsChangeType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="DeleteEquipmentUnitType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="TransactionResponse" type="TransactionResponseType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentUnitIdentifier" type="EquipmentUnitIdentifierType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="DeleteReason" type="DeleteReasonType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="DeleteReasonType">
+        <xsd:restriction base="xsd:string">
+          <xsd:minLength value="1"/>
+          <xsd:maxLength value="200"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="ResponseSummaryType">
+        <xsd:sequence>
+          <xsd:element name="TotalEquipmentTransactions" type="xsd:int"/>
+          <xsd:element name="TotalSuccessEquipmentTransactions" type="xsd:int"/>
+          <xsd:element name="TotalPartialSuccesTransactions" type="xsd:int"/>
+          <xsd:element name="TotalFailedEquipmentTransactions" type="xsd:int"/>
+          <xsd:element name="TotalInspectionTransactions" type="xsd:int"/>
+          <xsd:element name="TotalSuccessInspectionTransctions" type="xsd:int"/>
+          <xsd:element name="TotalFailedInspectionTransactions" type="xsd:int"/>
+          <xsd:element name="TotalConflicts" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentQueryFullViewRequestDetailType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentQuerySearchCriteria" type="EquipmentQuerySearchCriteriaType"/>
+          <xsd:element default="true" maxOccurs="1" minOccurs="0" name="IncludeConflictElements" type="xsd:boolean"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentQuerySearchCriteriaType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="150" minOccurs="1" name="EquipmentID" type="EquipmentUnitIdentifierType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentQueryResponseDetailType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="150" minOccurs="1" name="EquipmentUnit" type="EquipmentUnitQueryType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentUnitQueryType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentUnitHeader" type="EquipmentUnitHeaderType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="EquipmentData" type="EquipmentDataType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="InspectionsData" type="InspectionsDataType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="ConflictEquipmentData" type="EquipmentDataType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentUnitHeaderType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentID" type="EquipmentUnitIdentifierType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="ResponseSummary" type="MessageCodeType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="InspectionsDataType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="EquipmentInspection" type="GenericInspectionType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentDataType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="Component" type="ComponentType"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="ComponentElement" type="ComponentElementType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentQueryRequestDetailType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="EquipmentQuerySearchCriteria" type="EquipmentQuerySearchCriteriaType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="EquipmentQueryElementSelection" type="EquipmentQueryElementSelectionType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="EquipmentQueryInspectionSelection" type="EquipmentQueryInspectionSelectionType"/>
+          <xsd:element default="true" maxOccurs="1" minOccurs="0" name="IncludeConflictElements" type="xsd:boolean"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentQueryElementSelectionType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="50" minOccurs="1" name="ElementId" type="ElementIDType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="EquipmentQueryInspectionSelectionType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="50" minOccurs="1" name="InspectionType" type="InspectionType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <!--END: Service Specific Types-->
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="umlerEquipmentFullViewQueryRequest">
+    <wsdl:part element="srvc:EquipmentQueryFullViewRequest" name="theUmlerEquipmentFullViewQueryRequest"/>
+  </wsdl:message>
+  <wsdl:message name="umlerEquipmentFullViewQueryResponse">
+    <wsdl:part element="srvc:EquipmentQueryFullViewResponse" name="theUmlerEquipmentFullViewQueryResponse"/>
+  </wsdl:message>
+  <wsdl:message name="umlerEquipmentSelectElemetsQueryRequest">
+    <wsdl:part element="srvc:EquipmentSelectElementsQueryRequest" name="theUmlerEquipmentSelectElemetsQueryRequest"/>
+  </wsdl:message>
+  <wsdl:message name="umlerEquipmentSelectElemetsQueryResponse">
+    <wsdl:part element="srvc:EquipmentSelectElementsQueryResponse" name="theUmlerEquipmentSelectElemetsQueryResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="UmlerEquipmentQueryService">
+    <wsdl:operation name="UmlerEquipmentFullViewQuery">
+      <wsdl:input message="qs:umlerEquipmentFullViewQueryRequest"/>
+      <wsdl:output message="qs:umlerEquipmentFullViewQueryResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="UmlerEquipmentSelectElementsQuery">
+      <wsdl:input message="qs:umlerEquipmentSelectElemetsQueryRequest"/>
+      <wsdl:output message="qs:umlerEquipmentSelectElemetsQueryResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="UmlerEquipmentQueryServiceSoapBinding" type="qs:UmlerEquipmentQueryService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="UmlerEquipmentFullViewQuery">
+      <soap:operation soapAction=""/>
+      <wsdl:input>
+        <soap:body parts="theUmlerEquipmentFullViewQueryRequest" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="theUmlerEquipmentFullViewQueryResponse" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UmlerEquipmentSelectElementsQuery">
+      <soap:operation soapAction=""/>
+      <wsdl:input>
+        <soap:body parts="theUmlerEquipmentSelectElemetsQueryRequest" use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body parts="theUmlerEquipmentSelectElemetsQueryResponse" use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="UmlerEquipmentQueryService">
+    <wsdl:port binding="qs:UmlerEquipmentQueryServiceSoapBinding" name="UmlerEquipmentQueryService">
+      <soap:address location="https://services.railinc.com:443/umler-query-service/services/ws/UmlerEquipmentQueryService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

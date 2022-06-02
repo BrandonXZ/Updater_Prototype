@@ -4,3 +4,8 @@
 
 The add function in dbInterface.rs  is the mock up of what is to be done in this module
 */
+
+
+pub fn send_to_umler () {
+    
+}

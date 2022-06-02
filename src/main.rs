@@ -26,6 +26,7 @@ mod menu;
 mod dbInterface;
 mod splash;
 mod wsdl_send;
+mod xml_formatter;
 //mod scrap;
 //mod mysql_typecheck; //used for testing for schema !!unsafe atm!!
 
