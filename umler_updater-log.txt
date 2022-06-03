@@ -128,3 +128,43 @@ Logging: "Response received from Umler for car ID-----> ABOX0000050531", Action 
 Logging: "Response received from Umler for car ID-----> AA0000002370", Action occured @: 2022-06-03T11:17:31.007876100-04:00
 
 Logging: "Response received from Umler for car ID-----> AABX0000200611", Action occured @: 2022-06-03T11:17:36.807076600-04:00
+
+Logging: "Current unknown car ID is-----> CN  0000136408", Action occured @: 2022-06-03T11:24:45.731228800-04:00
+
+Logging: "Current unknown car ID is-----> AABX0000200605", Action occured @: 2022-06-03T11:24:45.739113700-04:00
+
+Logging: "Current unknown car ID is-----> ABOX0000050531", Action occured @: 2022-06-03T11:24:45.743782200-04:00
+
+Logging: "Current unknown car ID is-----> AA  0000002370", Action occured @: 2022-06-03T11:24:45.748458800-04:00
+
+Logging: "Current unknown car ID is-----> AABX0000200611", Action occured @: 2022-06-03T11:24:45.754455300-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000136408", Action occured @: 2022-06-03T11:25:13.939230800-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000200605", Action occured @: 2022-06-03T11:25:14.953924900-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000050531", Action occured @: 2022-06-03T11:25:15.960980500-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000002370", Action occured @: 2022-06-03T11:25:16.971526300-04:00
+
+Logging: "Current unknown equipment number formatting is-----> 0000200611", Action occured @: 2022-06-03T11:25:17.982834-04:00
+
+Logging: "Response received from Umler for car ID-----> CN0000136408", Action occured @: 2022-06-03T11:25:33.103538700-04:00
+
+Logging: "Response received from Umler for car ID-----> AABX0000200605", Action occured @: 2022-06-03T11:25:38.818913200-04:00
+
+Logging: "Response received from Umler for car ID-----> ABOX0000050531", Action occured @: 2022-06-03T11:25:44.566132900-04:00
+
+Logging: "Response received from Umler for car ID-----> AA0000002370", Action occured @: 2022-06-03T11:25:50.577960300-04:00
+
+Logging: "Response received from Umler for car ID-----> AABX0000200611", Action occured @: 2022-06-03T11:25:56.342139400-04:00
+
+Logging: "Current unknown car ID is-----> CN  0000136408", Action occured @: 2022-06-03T11:27:20.096124100-04:00
+
+Logging: "Current unknown car ID is-----> AABX0000200605", Action occured @: 2022-06-03T11:27:20.103262400-04:00
+
+Logging: "Current unknown car ID is-----> ABOX0000050531", Action occured @: 2022-06-03T11:27:20.108631-04:00
+
+Logging: "Current unknown car ID is-----> AA  0000002370", Action occured @: 2022-06-03T11:27:20.116246500-04:00
+
+Logging: "Current unknown car ID is-----> AABX0000200611", Action occured @: 2022-06-03T11:27:20.123000300-04:00

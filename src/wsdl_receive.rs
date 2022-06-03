@@ -28,6 +28,9 @@ pub async fn send_to_umler(wsdl_stmt: String, current: String) -> Result<(), req
             settings::logthis_nonError(lognote);
     }
     println!("Response from Umler ---> \n{:?}", WSDL_response);
+    // for i in WSDL_response.lines(){
+    //     println!("\n{}\n",i);
+    // }
     //println!("Response from Umler ---> \n{:#?}", whatever_this_is);
 
 

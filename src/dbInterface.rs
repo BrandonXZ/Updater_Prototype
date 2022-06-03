@@ -3,9 +3,10 @@
 * to the correct car table (see process order below)
 *
 * TO DO: 
-* Possibly rewrite function to check for last Id searched using MySQL flags instead of an auto-incremented column
+* Possibly rewrite function to check for last Id searched using MySQL flags instead of an auto-incremented column **Spoke to chili and using flags
+* above is pending a meeting later today @1pm to confirm this is agreed upon by those who would need to make some db changes(Amin, Jeff P)
+* above TODO will require additional function to send MySQL Statement that update the "processed" (tinyint column) after response from Umler.
 * 
-*
 ***********************************************PROCESS ORDER****************************************************************** 
 * Create or obtain existing pooled connection.
 * Query our Car detail table for columns and data-types to ensure we grab the relevant information (must be dynamic in case table schema changes).
@@ -131,7 +132,7 @@ pub fn add(current_connection: PooledConn, insert_stmt: String) -> Result<(), Er
 
 pub fn webservice_formatter(current_IDs:Vec<String>, schema: Vec<String>) -> String {
     let webservice_comm_type = "send function".to_string();
-    println!("Web Service Formatter functionality not added yet...");
+    println!("************Web Service Formatter*************\n");
     //let column_vec_xml = vec![];
 
     if current_IDs.is_empty() {
@@ -143,9 +144,6 @@ pub fn webservice_formatter(current_IDs:Vec<String>, schema: Vec<String>) -> Str
             let lognote = format!("Current unknown car ID is-----> {}", current);
             println!("{}", lognote);
             settings::logthis_nonError(lognote);
-
-
-
 
         }
     }
