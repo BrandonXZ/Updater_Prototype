@@ -5,13 +5,14 @@ by an iterator of the vec.
 */
 #![allow(unused_variables)]
 #![allow(unused_assignments)]
+#![allow(unused_must_use)]
 #![allow(unused_mut)]
 
 use core::time;
 use std::thread;
 
 use chrono::Utc;
-use crate::settings;
+use crate::{settings, wsdl_receive};
 
 
 pub fn run (schema:Vec<String>, unknown_IDs:Vec<String>) -> String {
@@ -136,11 +137,13 @@ pub fn xml_stmt_caller (initials: Vec<String>, numbers: Vec<String>, columns:Vec
     let columns = columns.clone();
     for (it, it2) in initials.iter().zip(numbers.iter_mut()) {
         thread::sleep(time::Duration::from_secs(5));
-        xml_stmt_maker(it.to_string(), it2.to_string(), columns.clone())
+        let wsdl_stmt = xml_stmt_maker(it.to_string(), it2.to_string(), columns.clone());
+        let Equip_Id = format!("{}{}", it.clone(), it2.clone());
+        wsdl_receive::send_to_umler(wsdl_stmt, Equip_Id);
     }
 }
 
-pub fn xml_stmt_maker (Equip_Initial: String, Equip_Number: String, Columns: Vec<String>) -> ()/*change to String */ {
+pub fn xml_stmt_maker (Equip_Initial: String, Equip_Number: String, Columns: Vec<String>) -> String  {
     let xml_stmt_vec: Vec<String> = vec![];
     let USERID = "DUOSUSER".to_string();
     let PASSWORD = "Centraco2020".to_string();
@@ -306,5 +309,6 @@ pub fn xml_stmt_maker (Equip_Initial: String, Equip_Number: String, Columns: Vec
              {}", xml_part1, column_part, last_part);
         
 
-    println!("{}", final_stmt);
+    println!("{}", final_stmt.clone());
+    final_stmt
 }

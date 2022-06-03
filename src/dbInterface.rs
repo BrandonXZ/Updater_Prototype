@@ -21,6 +21,7 @@
 #![allow(unused_assignments)]
 #![allow(unused_variables)]
 #![allow(unused_must_use)]
+#![allow(dead_code)]
 #![allow(unused_mut)]
 
 use core::time;
@@ -28,7 +29,7 @@ use std::{fs::{OpenOptions, self}, io::{Seek, SeekFrom,  Read, BufReader, BufRea
 
 use mysql::{self, Opts, Pool, PooledConn, Error, TxOpts, prelude::Queryable, Row, from_value_opt, FromValueError};
 use mysql_common::*;
-use crate::{settings, wsdl_send, dbStructs::{self, DuosCarData}, xml_formatter};
+use crate::{settings, wsdl_send, wsdl_receive, dbStructs::{self, DuosCarData}, xml_formatter};
 
 const DB_REF_FILE: &str = "db_ref.txt";
 
@@ -60,47 +61,49 @@ pub fn run() {
     let check_result = checktest(current_connection, last_searched.clone(), last_row_query);
     println!("\nRun func: Check result is ---> {}\n", check_result.clone());
     thread::sleep(time::Duration::from_secs(1));
+
     if check_result {
+        let current_connection = db_connection().unwrap();  
+        let current_connection2 = db_connection().unwrap();
+        let current_connection3 = db_connection().unwrap();
 
-    let current_connection = db_connection().unwrap();  
-    let current_connection2 = db_connection().unwrap();
-    let current_connection3 = db_connection().unwrap();
+        let unk_stmt = prep_unknown_Id_query(unknown_car_table.trim().to_string());
+        println!("\nRun func: stmt --> {}\n", unk_stmt.clone());
+        thread::sleep(time::Duration::from_secs(2));
+        let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
+        println!("\nRun func: car ID's ---> {:?}\n", unknown_car_IDs.clone());
+        println!("\nThis should be display the last item from the above car ID's list ---> {:?}\n", unknown_car_IDs.last().unwrap().to_string()); 
+        thread::sleep(time::Duration::from_secs(2));
+        let wsdl_search_IDs = webservice_formatter(unknown_car_IDs.clone(), current_schema.clone());
+        settings::saveLastSearch(unknown_car_IDs.last().unwrap().to_string());
+        
 
-    let unk_stmt = prep_unknown_Id_query(unknown_car_table.trim().to_string());
-    println!("\nRun func: stmt --> {}\n", unk_stmt.clone());
-    thread::sleep(time::Duration::from_secs(2));
-    let unknown_car_IDs = scrub_unknowns(current_connection, unk_stmt);
-    println!("\nRun func: car ID's ---> {:?}\n", unknown_car_IDs.clone());
-    println!("\nThis should be display the last item from the above car ID's list ---> {:?}\n", unknown_car_IDs.last().unwrap().to_string()); 
-    thread::sleep(time::Duration::from_secs(2));
-    let wsdl_search_IDs = webservice_formatter(unknown_car_IDs.clone(), current_schema.clone());
-    settings::saveLastSearch(unknown_car_IDs.last().unwrap().to_string());
-    
+            //below wsdl calls are demo dummy functions 
+        let wsdl_stmt = wsdl_send::db_statement_formatter(unknown_car_IDs.clone());
+        let wsdl_response = wsdl_send::dummy_wsdl_send(current_connection2, wsdl_stmt, db_url).unwrap();
 
-    //checkpoint
-    
-
-        //below wsdl calls are demo dummy functions 
-    let wsdl_stmt = wsdl_send::db_statement_formatter(unknown_car_IDs.clone());
-    let wsdl_response = wsdl_send::dummy_wsdl_send(current_connection2, wsdl_stmt, db_url).unwrap();
-
-    for i in wsdl_response.clone() {
-        println!("\nIteration of WSDL response vectors: {:?}\n", i.clone());
-        thread::sleep(time::Duration::from_secs(1));
-    }
-    let insert_stmt = MySQL_Insert_Formatter(wsdl_response, car_details_table.clone());
-    println!("\nstmt going to mysql: \n{}\n", insert_stmt.clone());
-    add(current_connection3, insert_stmt); //This will need to be moved towards the bottom after the webservice formatter, wsdl_send, wsdl_received 
-    println!("\n\n\nThe code below shows what the actual wsdl soap request going to umler will look like\n\n\n");
-    thread::sleep(time::Duration::from_secs(2));
-    xml_formatter::run(columns_only.clone(), unknown_car_IDs);
+        for i in wsdl_response.clone() {
+            println!("\nIteration of WSDL response vectors: {:?}\n", i.clone());
+            thread::sleep(time::Duration::from_secs(1));
+        }
+        let insert_stmt = MySQL_Insert_Formatter(wsdl_response, car_details_table.clone());
+        println!("\nstmt going to mysql: \n{}\n", insert_stmt.clone());
+        add(current_connection3, insert_stmt); //This will need to be moved towards the bottom after the webservice formatter, wsdl_send, wsdl_received 
+        println!("\n\n\nThe code below shows what the actual wsdl soap request going to umler will look like\n\n\n");
+        thread::sleep(time::Duration::from_secs(2));
+        xml_formatter::run(columns_only.clone(), unknown_car_IDs);
+        
     } else {
         println!("\nEnd of run function...\n");
 
     }
     
+
+
     println!("\nEnd of run function...\n");                     //remove during production
 }
+
+
 
 
 //add the returned car data(response from webservice) to the car info table or log if errors occur
@@ -397,4 +400,9 @@ pub fn checktest (current_connection: PooledConn, last_searched: String, get_las
         return true
     }
  
+}
+
+//update the unknown id table to reflect that the equipment id was sent over to umler for updated details to avoid duplicate calls 
+pub fn update_column_status () {
+
 }
