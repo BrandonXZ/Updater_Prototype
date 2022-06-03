@@ -2,10 +2,3 @@ db_ref.txt was created on 2022-06-02T09:56:34.882185700-04:00
 mysql://admin:admin@localhost:3306/db_centraco3
 tbl_unknown_ids -Unknown Car ID Table
 dummy_blank_detail_table -Car Detail Storage Table
-AA  0000002370 -last ID searched
-AABX0000200611 -last ID searched
-AABX0000200611 -last ID searched
-AABX0000200611 -last ID searched
-AABX0000200611 -last ID searched
-AABX0000200611 -last ID searched
-AABX0000200611 -last ID searched

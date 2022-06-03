@@ -17,6 +17,11 @@ pub async fn send_to_umler(wsdl_stmt: String, current: String) -> Result<(), req
     .text()
     .await?;
     let cloner = WSDL_response.clone();
+
+    /*Reqwest allows for dealing with errors received from webservice but this will be left out pending a message from Tracy regarding accurate column identifiers that
+    are not reflected in our database possibly due to us updating something, will call if no email received by 3pm today, for now this is left out to avoid dozens of 
+    errors filling up the error logs during demo.  */
+
     if cloner.is_empty() {
         let Tx_type = "WebService Reply".to_string();
         let lognote = format!("Error no response received----> {}", current);
@@ -27,12 +32,9 @@ pub async fn send_to_umler(wsdl_stmt: String, current: String) -> Result<(), req
             println!("{}", lognote);
             settings::logthis_nonError(lognote);
     }
+
+
     println!("Response from Umler ---> \n{:?}", WSDL_response);
-    // for i in WSDL_response.lines(){
-    //     println!("\n{}\n",i);
-    // }
-    //println!("Response from Umler ---> \n{:#?}", whatever_this_is);
-
-
+    
     Ok(())
 }
